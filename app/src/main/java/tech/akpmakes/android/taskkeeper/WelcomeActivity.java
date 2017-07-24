@@ -36,6 +36,7 @@ public class WelcomeActivity extends AppCompatActivity {
         if (!prefMgr.isFirstLaunch()) {
             launchHomeScreen();
             finish();
+            return;
         }
 
         // Make notification bar transparent

@@ -23,7 +23,7 @@
         android:layout_toLeftOf="@+id/event_time"
         tools:text="An Event" />
 
-    <TextView
+    <Chronometer
         android:id="@+id/event_time"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -36,7 +36,6 @@
         android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        tools:text="00:00:00" />
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
