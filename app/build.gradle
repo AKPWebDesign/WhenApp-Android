@@ -21,7 +21,7 @@ android {
         applicationId "tech.akpmakes.android.taskkeeper"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 2
+        versionCode 3
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
@@ -34,6 +34,7 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
+            applicationIdSuffix ".debug"
             signingConfig signingConfigs.release
         }
     }

@@ -24,6 +24,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tech.akpmakes.android.taskkeeper.MainActivity" />
+            <intent-filter>
+                <action android:name="tech.akpmakes.android.taskkeeper.activities.LoginActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".WelcomeActivity"
