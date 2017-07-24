@@ -2,6 +2,7 @@ package tech.akpmakes.android.taskkeeper;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,10 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
@@ -48,6 +48,15 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         mAuth = FirebaseAuth.getInstance();
 
         setContentView(R.layout.activity_main);
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                eventAdapter.notifyDataSetChanged();
+                handler.postDelayed( this, 1000 );
+            }
+        }, 1000);
     }
 
     @Override
@@ -97,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
                 } else {
                     events = new ArrayList<>(val.values());
                 }
+                Collections.sort(events);
+                Collections.reverse(events);
                 eventAdapter.clear();
                 eventAdapter.addAll(events);
                 eventAdapter.notifyDataSetChanged();
@@ -126,8 +137,8 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.profile:
-                startActivity(new Intent(this, ProfileActivity.class));
+            case R.id.settings:
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.add_item:
                 addItem();

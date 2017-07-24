@@ -3,10 +3,6 @@
     package="tech.akpmakes.android.taskkeeper">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".WhenApp"
@@ -43,6 +39,14 @@
             android:label="@string/title_activity_profile"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tech.akpmakes.android.taskkeeper.MainActivity" />
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tech.akpmakes.android.taskkeeper.MainActivity" />

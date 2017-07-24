@@ -2,6 +2,7 @@ package tech.akpmakes.android.taskkeeper;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import tech.akpmakes.android.taskkeeper.tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
@@ -31,7 +33,8 @@ public class WhenEventAdapter extends ArrayAdapter<WhenEvent> {
         TextView tvTime = (TextView) convertView.findViewById(R.id.event_time);
         // Populate the data into the template view using the data object
         tvName.setText(evt.name);
-        tvTime.setText("" + evt.when);
+        long seconds = (new Date().getTime() / 1000) - (evt.when / 1000);
+        tvTime.setText(DateUtils.formatElapsedTime(seconds));
         // Return the completed view to render on screen
         return convertView;
     }

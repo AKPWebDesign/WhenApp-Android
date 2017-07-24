@@ -1,6 +1,8 @@
 package tech.akpmakes.android.taskkeeper.tech.akpmakes.android.taskkeeper.models;
 
-public class WhenEvent {
+import android.support.annotation.NonNull;
+
+public class WhenEvent implements Comparable<WhenEvent> {
     public String name;
     public Long when;
 
@@ -10,4 +12,9 @@ public class WhenEvent {
     }
 
     public WhenEvent(){};
+
+    @Override
+    public int compareTo(@NonNull WhenEvent o) {
+        return o.when.compareTo(this.when);
+    }
 }

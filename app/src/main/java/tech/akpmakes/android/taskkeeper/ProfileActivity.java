@@ -3,8 +3,6 @@ package tech.akpmakes.android.taskkeeper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -32,7 +30,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         mAuth = FirebaseAuth.getInstance();
         prefMgr = new PreferenceManager(this);
 
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

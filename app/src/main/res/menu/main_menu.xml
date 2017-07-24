@@ -5,11 +5,11 @@
     <item
         android:id="@+id/add_item"
         android:icon="@drawable/ic_add"
-        android:title="Item"
-        app:showAsAction="always" />
+        android:title="@string/add_item"
+        app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/profile"
-        android:icon="@drawable/ic_login"
-        android:title="@string/title_activity_login"
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/title_activity_settings"
         app:showAsAction="ifRoom" />
 </menu>
