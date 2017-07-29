@@ -1,4 +1,4 @@
-package tech.akpmakes.android.taskkeeper.tech.akpmakes.android.taskkeeper.models;
+package tech.akpmakes.android.taskkeeper.models;
 
 import android.support.annotation.NonNull;
 
