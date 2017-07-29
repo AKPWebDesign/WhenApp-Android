@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
-import tech.akpmakes.android.taskkeeper.tech.akpmakes.android.taskkeeper.models.WhenEvent;
+import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
 public class MainActivity extends AppCompatActivity implements AddItemDialog.AddItemDialogListener {
     private static final String TAG = "MainActivity";

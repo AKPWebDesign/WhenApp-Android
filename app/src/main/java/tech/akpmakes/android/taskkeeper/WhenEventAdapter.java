@@ -1,26 +1,19 @@
 package tech.akpmakes.android.taskkeeper;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Chronometer;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import tech.akpmakes.android.taskkeeper.tech.akpmakes.android.taskkeeper.models.WhenEvent;
+import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
 public class WhenEventAdapter extends ArrayAdapter<WhenEvent> {
     public WhenEventAdapter(@NonNull Context context, ArrayList<WhenEvent> list) {
