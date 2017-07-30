@@ -22,36 +22,15 @@
             android:name="io.fabric.ApiKey"
             android:value="d70cc0c0eef2fdf1a924fd75b1e4114aa5747d69" />
 
-        <activity android:name=".MainActivity" />
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="tech.akpmakes.android.taskkeeper.MainActivity" />
-            <intent-filter>
-                <action android:name="tech.akpmakes.android.taskkeeper.activities.LoginActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity android:name=".MainActivity">
         </activity>
         <activity
             android:name=".WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="tech.akpmakes.android.taskkeeper.MainActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"

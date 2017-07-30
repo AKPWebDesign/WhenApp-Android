@@ -2,24 +2,40 @@ package tech.akpmakes.android.taskkeeper;
 
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
-import android.view.MenuItem;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.List;
 
@@ -155,12 +171,66 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment {
+    public static class GeneralPreferenceFragment extends PreferenceFragment implements GoogleApiClient.OnConnectionFailedListener {
+        private static final int RC_SIGN_IN_GOOGLE = 0;
+        private static final String TAG = "login";
+
+        private GoogleApiClient mGoogleApiClient;
+        private FirebaseAuth mAuth;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
+
+            // Configure sign-in to request the user's ID, email address, and basic
+            // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+
+            // Build a GoogleApiClient with access to the Google Sign-In API and the
+            // options specified by gso.
+            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity().getApplicationContext())
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+
+            mAuth = FirebaseAuth.getInstance();
+
+            if(mAuth.getCurrentUser() == null || mAuth.getCurrentUser().isAnonymous()) {
+                addPreferencesFromResource(R.xml.pref_general_signed_out);
+                final Preference sign_in = findPreference("sign_in_preference");
+                sign_in.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        signInGoogle();
+                        return true;
+                    }
+                });
+            } else {
+                addPreferencesFromResource(R.xml.pref_general_signed_in);
+                final Preference sign_out = findPreference("sign_out_preference");
+                sign_out.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        signOutGoogle();
+                        return true;
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            mGoogleApiClient.connect();
+        }
+
+        @Override
+        public void onStop() {
+            super.onStop();
+            mGoogleApiClient.disconnect();
         }
 
         @Override
@@ -171,6 +241,106 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+            if (requestCode == RC_SIGN_IN_GOOGLE) {
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                handleGoogleSignInResult(result);
+            }
+        }
+
+        private void handleGoogleSignInResult(GoogleSignInResult result) {
+            Log.d(TAG, "handleGoogleSignInResult:" + result.isSuccess());
+            if (result.isSuccess()) {
+                // Signed in successfully, show authenticated UI.
+                GoogleSignInAccount acct = result.getSignInAccount();
+                firebaseAuthWithGoogle(acct);
+            }
+            updateUI();
+        }
+
+        private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+            Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
+            final AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+            if(mAuth.getCurrentUser() != null) {
+                mAuth.getCurrentUser().linkWithCredential(credential)
+                    .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "linkWithCredential:success");
+                        } else {
+                            Log.w(TAG, "linkWithCredential:failure", task.getException());
+                            mAuth.signInWithCredential(credential)
+                                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Log.d(TAG, "signInWithCredential:success");
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                                        Toast.makeText(getActivity(), "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                    updateUI();
+                                    }
+                                });
+                        }
+                        }
+                    });
+            } else {
+                mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithCredential:success");
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithCredential:failure", task.getException());
+                                Toast.makeText(getActivity(), "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            updateUI();
+                        }
+                    });
+            }
+        }
+
+        private void signInGoogle() {
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+            startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
+        }
+
+        private void signOutGoogle() {
+            FirebaseAuth.getInstance().signOut();
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            updateUI();
+                        }
+                    });
+        }
+
+        private void updateUI() {
+            getActivity().finish();
+        }
+
+        @Override
+        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+            // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+            // be available.
+            Log.d(TAG, "onConnectionFailed:" + connectionResult);
         }
     }
 }
