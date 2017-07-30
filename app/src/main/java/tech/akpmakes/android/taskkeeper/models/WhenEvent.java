@@ -13,6 +13,22 @@ public class WhenEvent implements Comparable<WhenEvent> {
 
     public WhenEvent(){};
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getWhen() {
+        return when;
+    }
+
+    public void setWhen(Long when) {
+        this.when = when;
+    }
+
     @Override
     public int compareTo(@NonNull WhenEvent o) {
         return o.when.compareTo(this.when);

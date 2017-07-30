@@ -1,19 +1,34 @@
 package tech.akpmakes.android.taskkeeper;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ListView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -24,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -37,26 +53,30 @@ import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 public class MainActivity extends AppCompatActivity implements AddItemDialog.AddItemDialogListener {
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
-    private DatabaseReference mDBRef;
-    private ArrayList<WhenEvent> events;
-    private WhenEventAdapter eventAdapter;
+    private Query mDBQuery;
+    private RecyclerView mRecyclerView;
+    private FirebaseRecyclerAdapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         mAuth = FirebaseAuth.getInstance();
 
         setContentView(R.layout.activity_main);
+        mRecyclerView = findViewById(R.id.events_list);
 
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                eventAdapter.notifyDataSetChanged();
-                handler.postDelayed( this, 1000 );
-            }
-        }, 1000);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHapticFeedbackEnabled(true);
+
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                mLayoutManager.getOrientation());
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        setUpSwipe();
     }
 
     @Override
@@ -88,43 +108,122 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAdapter.cleanup();
+    }
+
+    private void setUpSwipe() {
+        ItemTouchHelper.SimpleCallback mIthSc = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            ColorDrawable bgDelete;
+            ColorDrawable bgRefresh;
+            Drawable refreshIcon;
+            Drawable deleteIcon;
+            int iconMargin;
+            boolean initiated = false;
+
+            private void init() {
+                bgDelete = new ColorDrawable(Color.parseColor("#f44336"));
+                bgRefresh = new ColorDrawable(Color.parseColor("#263238"));
+                refreshIcon = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_refresh);
+                deleteIcon = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_delete);
+                iconMargin = (int) MainActivity.this.getResources().getDimension(R.dimen.ic_clear_margin);
+                initiated = true;
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                WhenEventViewHolder vh = (WhenEventViewHolder) viewHolder;
+                DatabaseReference item =  mAdapter.getRef(vh.getAdapterPosition());
+                if(direction == ItemTouchHelper.LEFT) {
+                    item.removeValue();
+                } else {
+                    WhenEvent evt = new WhenEvent();
+                    evt.setName(vh.getName().toString());
+                    evt.setWhen(new Date().getTime());
+                    item.setValue(evt);
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                if (viewHolder.getAdapterPosition() == -1) {
+                    return;
+                }
+
+                if (!initiated) {
+                    init();
+                }
+
+                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+
+                    View itemView = viewHolder.itemView;
+
+                    if(dX > 0){
+                        draw(refreshIcon, bgRefresh, itemView, c, (int) dX, true);
+                    } else {
+                        draw(deleteIcon, bgDelete, itemView, c, (int) dX, false);
+                    }
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+
+            private void draw(Drawable icon, ColorDrawable bgColor, View itemView, Canvas c, int dX, boolean fromLeft) {
+                bgColor.setBounds(itemView.getRight() + dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                if(fromLeft) {
+                    bgColor.setBounds(itemView.getLeft(), itemView.getTop(), itemView.getLeft() + dX, itemView.getBottom());
+                }
+                bgColor.draw(c);
+
+                int itemHeight = itemView.getBottom() - itemView.getTop();
+                int intrinsicWidth = icon.getIntrinsicWidth();
+                int intrinsicHeight = icon.getIntrinsicWidth();
+
+                int iconLeft = itemView.getRight() - iconMargin - intrinsicWidth;
+                int iconRight = itemView.getRight() - iconMargin;
+                int iconTop = itemView.getTop() + (itemHeight - intrinsicHeight)/2;
+                int iconBottom = iconTop + intrinsicHeight;
+
+                if(fromLeft) {
+                    iconLeft = itemView.getLeft() + iconMargin;
+                    iconRight = itemView.getLeft() + iconMargin + intrinsicWidth;
+                }
+                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                icon.draw(c);
+            }
+        };
+        ItemTouchHelper mIth = new ItemTouchHelper(mIthSc);
+
+        mIth.attachToRecyclerView(mRecyclerView);
+    }
+
     private void updateUI(FirebaseUser user) {
         if(user == null) {
             return; // TODO: display an error
         }
 
-        mDBRef = FirebaseDatabase.getInstance().getReference("events/" + user.getUid());
-        events = new ArrayList<>();
-
-        ValueEventListener listener = new ValueEventListener() {
+        mDBQuery = FirebaseDatabase.getInstance().getReference("events/" + user.getUid()).orderByChild("when");
+        mAdapter = new FirebaseRecyclerAdapter<WhenEvent, WhenEventViewHolder>(
+                WhenEvent.class,
+                R.layout.item_whenevent,
+                WhenEventViewHolder.class,
+                mDBQuery) {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<Map<String, WhenEvent>> type = new GenericTypeIndicator<Map<String, WhenEvent>>() {};
-                Map val = dataSnapshot.getValue(type);
-                if(val == null || val.isEmpty()) {
-                    events = new ArrayList<>();
-                } else {
-                    events = new ArrayList<>(val.values());
-                }
-                Collections.sort(events);
-                Collections.reverse(events);
-                eventAdapter.clear();
-                eventAdapter.addAll(events);
-                eventAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "Database Error: " + databaseError.getMessage());
+            public void populateViewHolder(WhenEventViewHolder holder, WhenEvent evt, int position) {
+                holder.setName(evt.getName());
+                holder.setWhen(evt.getWhen());
             }
         };
-
-        mDBRef.addValueEventListener(listener);
-
-        eventAdapter = new WhenEventAdapter(this, events);
-
-        ListView listView = (ListView) findViewById(R.id.events_list);
-        listView.setAdapter(eventAdapter);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -154,6 +253,6 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
 
     @Override
     public void onValue(String name) {
-        mDBRef.push().setValue(new WhenEvent(name, new Date().getTime()));
+        mDBQuery.getRef().push().setValue(new WhenEvent(name, new Date().getTime()));
     }
 }
