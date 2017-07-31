@@ -1,5 +1,6 @@
 package tech.akpmakes.android.taskkeeper;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -236,10 +238,18 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
     private void addItem() {
         DialogFragment addItemFragment = new AddItemDialog();
         addItemFragment.show(getSupportFragmentManager(), "addItem");
+        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @Override
     public void onValue(String name) {
-        mDBQuery.getRef().push().setValue(new WhenEvent(name, new Date().getTime()));
+        if(mDBQuery != null) {
+            mDBQuery.getRef().push().setValue(new WhenEvent(name, new Date().getTime()));
+            Toast.makeText(MainActivity.this, "Event saved successfully!",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(MainActivity.this, "Your event could not be saved. Please try again.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }
