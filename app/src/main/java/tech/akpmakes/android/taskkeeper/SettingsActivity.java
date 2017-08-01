@@ -12,12 +12,13 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -173,6 +174,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_about);
             findPreference("app_version").setSummary(BuildConfig.VERSION_NAME);
             findPreference("os_version").setSummary("Android " + Build.VERSION.RELEASE + "; " + Build.DISPLAY);
+
+            findPreference("app_version").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), R.string.smiley,
+                            Snackbar.LENGTH_LONG).show();
+                    return true;
+                }
+            });
         }
 
         @Override
@@ -307,8 +317,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.w(TAG, "signInWithCredential:failure", task.getException());
-                                        Toast.makeText(getActivity(), "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Authentication failed.",
+                                                Snackbar.LENGTH_LONG).show();
                                     }
                                     updateUI();
                                     }
@@ -327,8 +337,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithCredential:failure", task.getException());
-                                Toast.makeText(getActivity(), "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
+                                Snackbar.make(getActivity().findViewById(android.R.id.content), "Authentication failed.",
+                                        Snackbar.LENGTH_LONG).show();
                             }
                             updateUI();
                         }

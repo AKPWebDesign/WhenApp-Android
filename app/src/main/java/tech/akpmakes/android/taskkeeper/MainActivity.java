@@ -6,10 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -117,8 +115,8 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInAnonymously:failure", task.getException());
-                        Toast.makeText(MainActivity.this, "Server connection failed. You may experience problems saving data if this issue persists.",
-                                Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Server connection failed. You may experience problems saving data if this issue persists.",
+                                Snackbar.LENGTH_LONG).show();
                         updateUI(null);
                     }
                     }
@@ -269,18 +267,17 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
     private void addItem() {
         DialogFragment addItemFragment = new AddItemDialog();
         addItemFragment.show(getSupportFragmentManager(), "addItem");
-        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @Override
     public void onValue(String name) {
         if(mDBQuery != null) {
             mDBQuery.getRef().push().setValue(new WhenEvent(name, new Date().getTime()));
-            Toast.makeText(MainActivity.this, "Event saved successfully!",
-                    Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Event saved successfully!",
+                    Snackbar.LENGTH_LONG).show();
         } else {
-            Toast.makeText(MainActivity.this, "Your event could not be saved. Please try again.",
-                    Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Your event could not be saved. Please try again.",
+                    Snackbar.LENGTH_LONG).show();
         }
     }
 }

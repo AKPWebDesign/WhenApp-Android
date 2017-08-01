@@ -56,4 +56,5 @@
     <string name="operating_system_summary">Unknown</string>
     <string name="application_version_summary">Unknown</string>
     <string name="text_copied">Text copied!</string>
+    <string name="smiley">😃  ❤  😍  😘  😻️</string>
 </resources>

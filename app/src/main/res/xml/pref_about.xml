@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference android:key="app_version"
-        android:enabled="false"
-        android:shouldDisableView="false"
+        android:enabled="true"
         android:title="@string/application_version_title"
         android:summary="@string/application_version_summary"/>
     <Preference android:key="os_version"
-        android:enabled="false"
-        android:shouldDisableView="false"
+        android:enabled="true"
         android:title="@string/operating_system_title"
         android:summary="@string/operating_system_summary"/>
     <Preference android:key="legal_info"
-        android:enabled="false"
-        android:shouldDisableView="false"
+        android:enabled="true"
         android:title="@string/legal_information_title"
         android:summary="@string/legal_information_summary"/>
 </PreferenceScreen>
