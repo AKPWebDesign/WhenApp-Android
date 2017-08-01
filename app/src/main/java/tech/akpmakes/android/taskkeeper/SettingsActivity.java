@@ -185,7 +185,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
 
-            findPreference("more_information").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            findPreference("more_info").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
