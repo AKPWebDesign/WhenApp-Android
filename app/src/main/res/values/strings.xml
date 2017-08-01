@@ -57,4 +57,6 @@
     <string name="application_version_summary">Unknown</string>
     <string name="text_copied">Text copied!</string>
     <string name="smiley">😃  ❤  😍  😘  😻️</string>
+    <string name="more_information_title">More information</string>
+    <string name="more_information_uri">https://when.akpmakes.tech/</string>
 </resources>

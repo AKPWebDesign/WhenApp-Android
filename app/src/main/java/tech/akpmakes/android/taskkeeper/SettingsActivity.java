@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -180,6 +181,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     Snackbar.make(getActivity().findViewById(android.R.id.content), R.string.smiley,
                             Snackbar.LENGTH_LONG).show();
+                    return true;
+                }
+            });
+
+            findPreference("more_information").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(getString(R.string.more_information_uri)));
+                    startActivity(i);
                     return true;
                 }
             });
