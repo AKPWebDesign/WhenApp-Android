@@ -24,14 +24,6 @@ repositories {
 }
 
 android {
-    signingConfigs {
-        release {
-            keyAlias 'signingKey'
-            keyPassword ANDROID_KEY_PASSWORD
-            storeFile file(ANDROID_KEY_FILE)
-            storePassword ANDROID_STORE_PASSWORD
-        }
-    }
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
     defaultConfig {
@@ -41,18 +33,15 @@ android {
         versionCode buildCode()
         versionName "${version}-alpha-${buildTime()} (${buildCode()})"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
         debug {
             applicationIdSuffix ".debug"
-            signingConfig signingConfigs.release
         }
     }
     productFlavors {
