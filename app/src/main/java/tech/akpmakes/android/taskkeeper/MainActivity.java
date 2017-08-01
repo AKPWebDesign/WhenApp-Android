@@ -129,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mAdapter.cleanup();
+        if(mAdapter != null) {
+            mAdapter.cleanup();
+        }
     }
 
     private void setUpSwipe() {
