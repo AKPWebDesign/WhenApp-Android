@@ -1,0 +1,121 @@
+{
+  "project_info": {
+    "project_number": "227314660464",
+    "firebase_url": "https://taskkeeperapp.firebaseio.com",
+    "project_id": "taskkeeperapp",
+    "storage_bucket": "taskkeeperapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:227314660464:android:774496a65d8710d7",
+        "android_client_info": {
+          "package_name": "tech.akpmakes.android.taskkeeper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "227314660464-d6ba2rten3u6ca29vd2r4rpjtq1i5pot.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.akpmakes.android.taskkeeper",
+            "certificate_hash": "9393e6f4722defee4fc891213357bf5366ff9f44"
+          }
+        },
+        {
+          "client_id": "227314660464-voorml6mkqqcen4oi4ddu3jnvno4fjgl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.akpmakes.android.taskkeeper",
+            "certificate_hash": "a7d076a7eb91aedb050cb1537969d41b865d62c3"
+          }
+        },
+        {
+          "client_id": "227314660464-fbaed3latlhgnj6aemlsm7aumhkrgikh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5lsQUXSMOwFeaqGz_L0N4HNv5NcDwS9I"
+        },
+        {
+          "current_key": "AIzaSyDLeA7HccWLwJeja5JL2KUbsrLuYSUoTOI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "227314660464-fbaed3latlhgnj6aemlsm7aumhkrgikh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:227314660464:android:0e54d0a169f74bab",
+        "android_client_info": {
+          "package_name": "tech.akpmakes.android.taskkeeper.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "227314660464-ddg5ab9c431mq72sgduirotgfuke9k1v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.akpmakes.android.taskkeeper.debug",
+            "certificate_hash": "9393e6f4722defee4fc891213357bf5366ff9f44"
+          }
+        },
+        {
+          "client_id": "227314660464-t9k58v5n5oldsr7fvm2lo2l02d943b6p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.akpmakes.android.taskkeeper.debug",
+            "certificate_hash": "a7d076a7eb91aedb050cb1537969d41b865d62c3"
+          }
+        },
+        {
+          "client_id": "227314660464-fbaed3latlhgnj6aemlsm7aumhkrgikh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5lsQUXSMOwFeaqGz_L0N4HNv5NcDwS9I"
+        },
+        {
+          "current_key": "AIzaSyDLeA7HccWLwJeja5JL2KUbsrLuYSUoTOI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "227314660464-fbaed3latlhgnj6aemlsm7aumhkrgikh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
