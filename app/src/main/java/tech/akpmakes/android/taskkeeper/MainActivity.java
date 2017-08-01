@@ -6,8 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +35,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.util.Date;
 
@@ -42,6 +46,7 @@ import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 public class MainActivity extends AppCompatActivity implements AddItemDialog.AddItemDialogListener {
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
+    private FirebaseRemoteConfig mRemoteConfig;
     private Query mDBQuery;
     private RecyclerView mRecyclerView;
     private FirebaseRecyclerAdapter mAdapter;
@@ -51,6 +56,28 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         mAuth = FirebaseAuth.getInstance();
+
+        mRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings remoteConfigSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build();
+        mRemoteConfig.setConfigSettings(remoteConfigSettings);
+        mRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+
+        long cacheExpiration = 43200; // 12 hours, to match Firebase best practices.
+        if(mRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
+            cacheExpiration = 0;
+        }
+        mRemoteConfig.fetch(cacheExpiration)
+            .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        mRemoteConfig.activateFetched();
+                    }
+                    applyRemoteConfig();
+                }
+            });
 
         setContentView(R.layout.activity_main);
         mRecyclerView = findViewById(R.id.events_list);
@@ -66,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
         setUpSwipe();
+    }
+
+    private void applyRemoteConfig() {
+        // NOOP for now.
     }
 
     @Override

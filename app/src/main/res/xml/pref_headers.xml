@@ -4,7 +4,12 @@
 
     <header
         android:fragment="tech.akpmakes.android.taskkeeper.SettingsActivity$GeneralPreferenceFragment"
-        android:icon="@drawable/ic_info_black_24dp"
+        android:icon="@drawable/ic_general"
         android:title="@string/pref_header_general" />
+
+    <header
+        android:fragment="tech.akpmakes.android.taskkeeper.SettingsActivity$AboutPreferenceFragment"
+        android:icon="@drawable/ic_about"
+        android:title="@string/pref_header_about" />
 
 </preference-headers>

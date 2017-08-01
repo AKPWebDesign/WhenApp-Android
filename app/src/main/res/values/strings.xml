@@ -46,7 +46,14 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
-    <!-- Example General settings -->
     <string name="pref_header_general">General</string>
     <string name="when_logo_content_description">When Logo</string>
+    <string name="pref_header_about">About When</string>
+    <string name="application_version_title">Application version</string>
+    <string name="operating_system_title">Operating system</string>
+    <string name="legal_information_title">Legal information</string>
+    <string name="legal_information_summary">Copyright 2017 AKP Web Design. All rights reserved.</string>
+    <string name="operating_system_summary">Unknown</string>
+    <string name="application_version_summary">Unknown</string>
+    <string name="text_copied">Text copied!</string>
 </resources>
