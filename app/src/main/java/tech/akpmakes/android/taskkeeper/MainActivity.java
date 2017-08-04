@@ -90,7 +90,8 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
                 mLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        setUpSwipe();
+        ItemTouchHelper mIth = new ItemTouchHelper(new SwipeHandler(this));
+        mIth.attachToRecyclerView(mRecyclerView);
     }
 
     private void applyRemoteConfig() {
@@ -132,98 +133,6 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         if(mAdapter != null) {
             mAdapter.cleanup();
         }
-    }
-
-    private void setUpSwipe() {
-        ItemTouchHelper.SimpleCallback mIthSc = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-            ColorDrawable bgDelete;
-            ColorDrawable bgRefresh;
-            Drawable refreshIcon;
-            Drawable deleteIcon;
-            int iconMargin;
-            boolean initiated = false;
-
-            private void init() {
-                bgDelete = new ColorDrawable(Color.parseColor("#f44336"));
-                bgRefresh = new ColorDrawable(Color.parseColor("#263238"));
-                refreshIcon = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_refresh);
-                deleteIcon = ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_delete);
-                iconMargin = (int) MainActivity.this.getResources().getDimension(R.dimen.ic_clear_margin);
-                initiated = true;
-            }
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                WhenEventViewHolder vh = (WhenEventViewHolder) viewHolder;
-                DatabaseReference item =  mAdapter.getRef(vh.getAdapterPosition());
-                if(direction == ItemTouchHelper.LEFT) {
-                    item.removeValue();
-                } else {
-                    WhenEvent evt = new WhenEvent();
-                    evt.setName(vh.getName().toString());
-                    evt.setWhen(new Date().getTime());
-                    item.setValue(evt);
-                }
-            }
-
-            @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-
-                if (viewHolder.getAdapterPosition() == -1) {
-                    return;
-                }
-
-                if (!initiated) {
-                    init();
-                }
-
-                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-
-                    View itemView = viewHolder.itemView;
-
-                    if(dX > 0){
-                        draw(refreshIcon, bgRefresh, itemView, c, (int) dX, true);
-                    } else {
-                        draw(deleteIcon, bgDelete, itemView, c, (int) dX, false);
-                    }
-                }
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-
-            private void draw(Drawable icon, ColorDrawable bgColor, View itemView, Canvas c, int dX, boolean fromLeft) {
-                bgColor.setBounds(itemView.getRight() + dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-                if(fromLeft) {
-                    bgColor.setBounds(itemView.getLeft(), itemView.getTop(), itemView.getLeft() + dX, itemView.getBottom());
-                }
-                bgColor.draw(c);
-
-                int itemHeight = itemView.getBottom() - itemView.getTop();
-                int intrinsicWidth = icon.getIntrinsicWidth();
-                int intrinsicHeight = icon.getIntrinsicWidth();
-
-                int iconLeft = itemView.getRight() - iconMargin - intrinsicWidth;
-                int iconRight = itemView.getRight() - iconMargin;
-                int iconTop = itemView.getTop() + (itemHeight - intrinsicHeight)/2;
-                int iconBottom = iconTop + intrinsicHeight;
-
-                if(fromLeft) {
-                    iconLeft = itemView.getLeft() + iconMargin;
-                    iconRight = itemView.getLeft() + iconMargin + intrinsicWidth;
-                }
-                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
-
-                icon.draw(c);
-            }
-        };
-        ItemTouchHelper mIth = new ItemTouchHelper(mIthSc);
-
-        mIth.attachToRecyclerView(mRecyclerView);
     }
 
     private void updateUI(FirebaseUser user) {
@@ -281,5 +190,9 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
             Snackbar.make(findViewById(android.R.id.content), "Your event could not be saved. Please try again.",
                     Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    FirebaseRecyclerAdapter getAdapter() {
+        return mAdapter;
     }
 }
