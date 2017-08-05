@@ -11,6 +11,7 @@ androidGitVersion {
     codeFormat = 'MNNPPBBB'
     hideBranches = [ ]
     untrackedIsDirty = true
+    format = "%tag%%-count%%-commit%%-dirty%"
 }
 
 repositories {
