@@ -1,21 +1,16 @@
-import java.text.SimpleDateFormat
+plugins {
+    id 'com.gladed.androidgitversion' version '0.3.4'
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.fabric'
 
-def version = "1.0.0"
-
-static def buildTime() {
-    def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-    df.setTimeZone(TimeZone.getTimeZone("UTC"))
-    return df.format(new Date())
-}
-
-static def buildCode() {
-    def df = new SimpleDateFormat("yyMMddHHmm")
-    df.setTimeZone(TimeZone.getTimeZone("UTC"))
-    return Integer.parseInt(df.format(new Date()))
+androidGitVersion {
+    baseCode 1800000000
+    codeFormat = 'MNNPPP'
+    hideBranches = [ ]
+    untrackedIsDirty = true
 }
 
 repositories {
@@ -30,8 +25,8 @@ android {
         applicationId "tech.akpmakes.android.taskkeeper"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode buildCode()
-        versionName "${version}-alpha-${buildTime()} (${buildCode()})"
+        versionName androidGitVersion.name()
+        versionCode androidGitVersion.code()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
