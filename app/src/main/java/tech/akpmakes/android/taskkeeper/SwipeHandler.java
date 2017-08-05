@@ -32,8 +32,9 @@ class SwipeHandler extends ItemTouchHelper.SimpleCallback {
 
     private void init() {
         initiated = true;
-        bgDelete = new ColorDrawable(Color.parseColor("#f44336"));
-        bgRefresh = new ColorDrawable(Color.parseColor("#263238"));
+
+        bgDelete = new ColorDrawable(ContextCompat.getColor(this.mainActivity.getBaseContext(), R.color.delete));
+        bgRefresh = new ColorDrawable(ContextCompat.getColor(this.mainActivity.getBaseContext(), R.color.refresh));
         refreshIcon = ContextCompat.getDrawable(mainActivity, R.drawable.ic_refresh);
         deleteIcon = ContextCompat.getDrawable(mainActivity, R.drawable.ic_delete);
         iconMargin = (int) mainActivity.getResources().getDimension(R.dimen.ic_clear_margin);
