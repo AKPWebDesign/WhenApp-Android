@@ -8,7 +8,7 @@ apply plugin: 'io.fabric'
 
 androidGitVersion {
     baseCode 1800000000
-    codeFormat = 'MNNPPP'
+    codeFormat = 'MNNPPBBB'
     hideBranches = [ ]
     untrackedIsDirty = true
 }
