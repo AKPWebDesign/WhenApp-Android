@@ -43,7 +43,7 @@ android {
     productFlavors {
     }
 
-    println androidGitVersion.code()
+    println 'VersionCode: ' + androidGitVersion.code()
 }
 
 dependencies {
