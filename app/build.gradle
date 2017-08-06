@@ -7,7 +7,7 @@ apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.fabric'
 
 androidGitVersion {
-    baseCode 1800000000
+    baseCode 1900000000
     codeFormat = 'MNNPPBBB'
     hideBranches = [ ]
     untrackedIsDirty = true
