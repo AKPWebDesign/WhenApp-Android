@@ -11,6 +11,7 @@
         android:summary="@string/operating_system_summary"/>
     <PreferenceCategory android:title="Social"/>
     <Preference android:key="social_discord"
+        android:icon="@drawable/ic_discord_logo_black"
         android:enabled="true"
         android:title="@string/social_discord_title"
         android:summary="@string/social_discord_summary"/>
