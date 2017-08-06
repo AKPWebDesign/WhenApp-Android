@@ -185,6 +185,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
 
+            findPreference("social_discord").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(getString(R.string.social_discord_uri)));
+                    startActivity(i);
+                    return true;
+                }
+            });
+
             findPreference("more_info").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {

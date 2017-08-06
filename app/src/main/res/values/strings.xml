@@ -59,4 +59,7 @@
     <string name="smiley">😃  ❤  😍  😘  😻️</string>
     <string name="more_information_title">More information</string>
     <string name="more_information_uri">https://when.akpmakes.tech/</string>
+    <string name="social_discord_title">Discord</string>
+    <string name="social_discord_summary">Join us on Discord</string>
+    <string name="social_discord_uri">https://discord.gg/cYkTzan</string>
 </resources>

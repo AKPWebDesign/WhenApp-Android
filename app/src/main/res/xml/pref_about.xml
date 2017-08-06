@@ -9,6 +9,11 @@
         android:enabled="true"
         android:title="@string/operating_system_title"
         android:summary="@string/operating_system_summary"/>
+    <PreferenceCategory android:title="Social"/>
+    <Preference android:key="social_discord"
+        android:enabled="true"
+        android:title="@string/social_discord_title"
+        android:summary="@string/social_discord_summary"/>
     <PreferenceCategory android:title="Info"/>
     <Preference android:key="legal_info"
         android:enabled="true"
