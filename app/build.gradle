@@ -42,6 +42,8 @@ android {
     }
     productFlavors {
     }
+
+    println androidGitVersion.code()
 }
 
 dependencies {
