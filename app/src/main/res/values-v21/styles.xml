@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="WhenPreferenceThemeOverlay" parent="android:Theme.Material.Settings">
+        <item name="preferenceFragmentCompatStyle">@style/PreferenceFragment</item>
+        <item name="preferenceStyle">@style/Preference</item>
+    </style>
+</resources>
