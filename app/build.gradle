@@ -67,6 +67,7 @@ dependencies {
     compile 'com.android.support:design:26.0.0'
     compile 'com.android.support:support-v4:26.0.0'
     compile 'com.android.support:support-vector-drawable:26.0.0'
+    compile 'com.android.support:preference-v7:26.0.0'
     testCompile 'junit:junit:4.12'
 }
 
