@@ -10,12 +10,12 @@
         android:summary="@string/operating_system_summary"/>
     <PreferenceCategory android:title="Social">
         <Preference android:key="social_discord"
-            android:icon="@drawable/ic_discord_logo_black"
+            android:icon="@drawable/ic_discord_logo"
             android:enabled="true"
             android:title="@string/social_discord_title"
             android:summary="@string/social_discord_summary"/>
         <Preference android:key="social_github"
-            android:icon="@drawable/ic_github_icon"
+            android:icon="@drawable/ic_github_logo"
             android:enabled="true"
             android:title="@string/social_github_title"
             android:summary="@string/social_github_summary" />
