@@ -65,4 +65,5 @@
     <string name="social_github_title">GitHub</string>
     <string name="social_github_summary">When is Open Source! Check out the code on GitHub!</string>
     <string name="social_github_uri">https://github.com/WhenApp/WhenApp-Android</string>
+    <string name="welcome_screen_title">Welcome screen</string>
 </resources>
