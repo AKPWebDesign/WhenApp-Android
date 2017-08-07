@@ -1,0 +1,10 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:id="@+id/rate_preference"
+        android:enabled="true"
+        android:key="rate_preference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/rate_title"
+        android:summary="@string/rate_summary"/>
+</PreferenceScreen>

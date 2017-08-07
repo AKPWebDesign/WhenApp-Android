@@ -226,6 +226,22 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            String package_name =  this.getActivity().getApplicationContext().getPackageName();
+            final Uri uri = Uri.parse("market://details?id=" + (!package_name.endsWith(".debug") ? package_name : package_name.substring(0, package_name.length() - 6)));
+
+            final Intent rateAppIntent = new Intent(Intent.ACTION_VIEW, uri);
+            if (this.getActivity().getPackageManager().queryIntentActivities(rateAppIntent, 0).size() > 0) {
+                addPreferencesFromResource(R.xml.pref_general_rate);
+                final Preference rate_app = findPreference("rate_preference");
+                rate_app.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        startActivity(rateAppIntent);
+                        return true;
+                    }
+                });
+            }
         }
 
         @Override
