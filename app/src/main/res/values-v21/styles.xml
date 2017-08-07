@@ -2,6 +2,10 @@
 <resources>
     <style name="WhenPreferenceThemeOverlay" parent="android:Theme.Material.Settings">
         <item name="preferenceFragmentCompatStyle">@style/PreferenceFragment</item>
-        <item name="preferenceStyle">@style/Preference</item>
+        <item name="preferenceStyle">@style/CustomPreference</item>
+    </style>
+
+    <style name="CustomPreference">
+        <item name="android:layout">@layout/custom_preference</item>
     </style>
 </resources>
