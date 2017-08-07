@@ -59,6 +59,8 @@
     <string name="smiley">😃  ❤  😍  😘  😻️</string>
     <string name="more_information_title">More information</string>
     <string name="more_information_uri">https://when.akpmakes.tech/</string>
+	<string name="privacy_policy_title">Terms of Service / Privacy Policy</string>
+    <string name="privacy_policy_uri">https://when.akpmakes.tech/privacy.html</string>
     <string name="social_discord_title">Discord</string>
     <string name="social_discord_summary">Join us on Discord</string>
     <string name="social_discord_uri">https://discord.gg/9GpztdT</string>

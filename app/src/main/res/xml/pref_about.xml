@@ -25,6 +25,9 @@
             android:enabled="true"
             android:title="@string/legal_information_title"
             android:summary="@string/legal_information_summary"/>
+		<Preference android:key="privacy_policy"
+            android:enabled="true"
+            android:title="@string/privacy_policy_title"/>
         <Preference android:key="more_info"
             android:enabled="true"
             android:title="@string/more_information_title"/>
