@@ -31,12 +31,12 @@
     <string name="start">GOT IT</string>
     <string name="slide_1_title">Welcome to When!</string>
     <string name="slide_1_desc">The quick and easy way to keep track of your tasks!</string>
-    <string name="slide_2_title">Placeholder</string>
-    <string name="slide_2_desc">This is placeholder text! Lorem ipsum something something wow!</string>
-    <string name="slide_3_title">Placeholder</string>
-    <string name="slide_3_desc">This is placeholder text! Lorem ipsum something something wow!</string>
+    <string name="slide_2_title">Keep track of multiple tasks</string>
+    <string name="slide_2_desc">Add a task by pressing the +</string>
+    <string name="slide_3_title">Swipe to manage tasks</string>
+    <string name="slide_3_desc">Reset a task by swiping to the right.\nDelete by swiping to the left.</string>
     <string name="slide_4_title">Placeholder</string>
-    <string name="slide_4_desc">This is placeholder text! Lorem ipsum something something wow!</string>
+    <string name="slide_4_desc">Mark my words, something useful will be here eventually.</string>
 
 
     <string name="title_activity_profile">Profile</string>
