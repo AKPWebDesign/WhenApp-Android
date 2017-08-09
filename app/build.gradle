@@ -22,6 +22,14 @@ repositories {
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
+    signingConfigs {
+        debugApp {
+            keyAlias 'signingKey'
+            keyPassword ANDROID_KEY_PASSWORD
+            storeFile file(ANDROID_KEY_FILE)
+            storePassword ANDROID_STORE_PASSWORD
+        }
+    }
     defaultConfig {
         applicationId "tech.akpmakes.android.taskkeeper"
         minSdkVersion 15
@@ -38,6 +46,7 @@ android {
         }
         debug {
             applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debugApp
         }
     }
     productFlavors {
