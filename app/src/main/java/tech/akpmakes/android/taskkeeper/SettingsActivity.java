@@ -294,54 +294,25 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
             Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+            Log.d(TAG, "firebaseAuthWithGoogle:currentUid:" + mAuth.getCurrentUser().getUid());
 
             final AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-            if (mAuth.getCurrentUser() != null) {
-                mAuth.getCurrentUser().linkWithCredential(credential)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "linkWithCredential:success");
-                                } else {
-                                    Log.w(TAG, "linkWithCredential:failure", task.getException());
-                                    mAuth.signInWithCredential(credential)
-                                            .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                                    if (task.isSuccessful()) {
-                                                        // Sign in success, update UI with the signed-in user's information
-                                                        Log.d(TAG, "signInWithCredential:success");
-                                                    } else {
-                                                        // If sign in fails, display a message to the user.
-                                                        Log.w(TAG, "signInWithCredential:failure", task.getException());
-                                                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Authentication failed.",
-                                                                Snackbar.LENGTH_LONG).show();
-                                                    }
-                                                    updateUI();
-                                                }
-                                            });
-                                }
-                            }
-                        });
-            } else {
-                mAuth.signInWithCredential(credential)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "signInWithCredential:success");
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "signInWithCredential:failure", task.getException());
-                                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Authentication failed.",
-                                            Snackbar.LENGTH_LONG).show();
-                                }
-                                updateUI();
-                            }
-                        });
-            }
+            mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Snackbar.make(getActivity().findViewById(android.R.id.content), "Authentication failed.",
+                                    Snackbar.LENGTH_LONG).show();
+                        }
+                        updateUI();
+                    }
+                });
         }
 
         private void signInGoogle() {

@@ -70,4 +70,5 @@
     <string name="welcome_screen_title">Welcome screen</string>
     <string name="rate_title">Rate When</string>
     <string name="rate_summary"></string>
+    <string name="sign_in_failure">Sign in failed. You may experience problems saving data if this issue persists.</string>
 </resources>

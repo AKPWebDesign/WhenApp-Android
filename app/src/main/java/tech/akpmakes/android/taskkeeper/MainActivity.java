@@ -92,30 +92,19 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null) {
-            mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInAnonymously:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        updateUI(user);
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInAnonymously:failure", task.getException());
-                        Snackbar.make(findViewById(android.R.id.content), "Server connection failed. You may experience problems saving data if this issue persists.",
-                                Snackbar.LENGTH_LONG).show();
-                        updateUI(null);
-                    }
-                    }
-                });
-        } else {
-            updateUI(currentUser);
-        }
+
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                updateUI(firebaseAuth.getCurrentUser());
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateAuth();
     }
 
     @Override
@@ -123,6 +112,33 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         super.onDestroy();
         if(mAdapter != null) {
             mAdapter.cleanup();
+        }
+    }
+
+    private void updateAuth() {
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null) {
+            mAuth.signInAnonymously()
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInAnonymously:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                updateUI(user);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInAnonymously:failure", task.getException());
+                                Snackbar.make(findViewById(android.R.id.content), R.string.sign_in_failure,
+                                        Snackbar.LENGTH_LONG).show();
+                                updateUI(null);
+                            }
+                        }
+                    });
+        } else {
+            updateUI(currentUser);
         }
     }
 
