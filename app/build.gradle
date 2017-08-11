@@ -24,10 +24,9 @@ android {
     buildToolsVersion "26.0.1"
     signingConfigs {
         debugApp {
-            keyAlias ANDROID_SIGNING_KEY
-            keyPassword ANDROID_KEY_PASSWORD
-            storeFile file(ANDROID_KEY_FILE)
-            storePassword ANDROID_STORE_PASSWORD
+            keyPassword "WhenAppDebugPassword"
+            storeFile file("../debug.jks")
+            storePassword "WhenAppDebugPassword"
         }
     }
     defaultConfig {
