@@ -70,6 +70,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "227314660464-3hi0gl68k2h6udhbt18pgbrj4q5poekr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tech.akpmakes.android.taskkeeper.debug",
+            "certificate_hash": "420a3673bea5f80293dc1635f176bc0dcf91a259"
+          }
+        },
+        {
           "client_id": "227314660464-ddg5ab9c431mq72sgduirotgfuke9k1v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
