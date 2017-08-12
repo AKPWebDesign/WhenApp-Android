@@ -34,6 +34,14 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthCredential;
+import com.google.firebase.auth.TwitterAuthProvider;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -183,6 +191,7 @@ public class SettingsActivity extends AppCompatActivity {
         private static final String TAG = "login";
 
         private GoogleApiClient mGoogleApiClient;
+        private TwitterAuthClient mTwitterAuthClient;
         private FirebaseAuth mAuth;
 
         @Override
@@ -203,15 +212,25 @@ public class SettingsActivity extends AppCompatActivity {
                     .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                     .build();
 
+            mTwitterAuthClient = new TwitterAuthClient();
+
             mAuth = FirebaseAuth.getInstance();
 
             if (mAuth.getCurrentUser() == null || mAuth.getCurrentUser().isAnonymous()) {
                 addPreferencesFromResource(R.xml.pref_general_signed_out);
-                final Preference sign_in = findPreference("sign_in_preference");
-                sign_in.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                final Preference google = findPreference("sign_in_google");
+                google.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         signInGoogle();
+                        return true;
+                    }
+                });
+                final Preference twitter = findPreference("sign_in_twitter");
+                twitter.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        signInTwitter();
                         return true;
                     }
                 });
@@ -221,7 +240,7 @@ public class SettingsActivity extends AppCompatActivity {
                 sign_out.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        signOutGoogle();
+                        signOut();
                         return true;
                     }
                 });
@@ -274,6 +293,9 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
+            Log.d(TAG, "requestCode: " + requestCode);
+            // this looks weird, but this is what Firebase Auth docs say to do.
+            mTwitterAuthClient.onActivityResult(requestCode, resultCode, data);
 
             // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
             if (requestCode == RC_SIGN_IN_GOOGLE) {
@@ -297,10 +319,41 @@ public class SettingsActivity extends AppCompatActivity {
             Log.d(TAG, "firebaseAuthWithGoogle:currentUid:" + mAuth.getCurrentUser().getUid());
 
             final AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+            signInWithCredential(credential);
+        }
+
+        private void signInGoogle() {
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+            startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
+        }
+
+        private void signInTwitter() {
+            Log.d(TAG, "twitterLogin:start");
+            mTwitterAuthClient.authorize(this.getActivity(), new Callback<TwitterSession>() {
+                @Override
+                public void success(Result<TwitterSession> result) {
+                    TwitterSession session = result.data;
+                    Log.d(TAG, "TwitterSession:" + session);
+                    AuthCredential credential = TwitterAuthProvider.getCredential(
+                            session.getAuthToken().token,
+                            session.getAuthToken().secret);
+                    signInWithCredential(credential);
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    Log.w(TAG, "twitterLogin:failure", exception);
+                    updateUI();
+                }
+            });
+        }
+
+        private void signInWithCredential(AuthCredential credential) {
+            Log.d(TAG, "signInWithCredential:start");
             mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
@@ -315,12 +368,7 @@ public class SettingsActivity extends AppCompatActivity {
                 });
         }
 
-        private void signInGoogle() {
-            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-            startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
-        }
-
-        private void signOutGoogle() {
+        private void signOut() {
             FirebaseAuth.getInstance().signOut();
             Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                     new ResultCallback<Status>() {

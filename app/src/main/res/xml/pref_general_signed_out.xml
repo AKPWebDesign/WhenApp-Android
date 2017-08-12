@@ -1,9 +1,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
-        android:id="@+id/sign_in_preference"
+        android:id="@+id/sign_in_google"
         android:enabled="true"
-        android:key="sign_in_preference"
+        android:key="sign_in_google"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="@string/common_signin_button_text_long" />
+    <Preference
+        android:id="@+id/sign_in_twitter"
+        android:enabled="true"
+        android:key="sign_in_twitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/tw__login_btn_txt" />
+    <!--TODO: decide if we want to change the Twitter login text to match the Google wording. -->
 </PreferenceScreen>

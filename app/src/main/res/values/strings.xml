@@ -71,4 +71,8 @@
     <string name="rate_title">Rate When</string>
     <string name="rate_summary"></string>
     <string name="sign_in_failure">Sign in failed. You may experience problems saving data if this issue persists.</string>
+
+    <!-- Twitter API -->
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">cYXbXylaEVcuJWwvL3eBsxEWf</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">2lqMXY6MvAiZ45zXT7q9inaLupaBsw3YUaujzeE1xsjhh7zFuk</string>
 </resources>
