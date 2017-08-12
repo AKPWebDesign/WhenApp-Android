@@ -59,7 +59,6 @@ public class SettingsActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private int mGeneralFragmentID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -413,17 +412,11 @@ public class SettingsActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return getGeneralFragment();
+                    return new GeneralPreferenceFragment();
                 case 1:
                     return new AboutPreferenceFragment();
             }
             return null;
-        }
-
-        private Fragment getGeneralFragment() {
-            GeneralPreferenceFragment frag = new GeneralPreferenceFragment();
-            mGeneralFragmentID = frag.getId();
-            return frag;
         }
 
         @Override
