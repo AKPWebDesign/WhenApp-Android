@@ -83,6 +83,12 @@ public class SettingsActivity extends AppCompatActivity {
         setupActionBar();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getSupportFragmentManager().findFragmentByTag("android:switcher:"+mViewPager.getId()+":0").onActivityResult(requestCode, resultCode, data);
+    }
+
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
      */
@@ -213,6 +219,7 @@ public class SettingsActivity extends AppCompatActivity {
                     .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                     .build();
 
+            Twitter.getLogger().setLogLevel(Log.DEBUG);
             mTwitterAuthClient = new TwitterAuthClient();
 
             mAuth = FirebaseAuth.getInstance();
