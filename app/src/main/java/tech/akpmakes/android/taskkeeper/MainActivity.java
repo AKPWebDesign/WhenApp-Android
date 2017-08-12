@@ -32,7 +32,7 @@ import java.util.Date;
 import io.fabric.sdk.android.Fabric;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
-public class MainActivity extends AppCompatActivity implements AddItemDialog.AddItemDialogListener {
+public class MainActivity extends AppCompatActivity implements AddItemDialog.AddItemDialogListener, FirebaseAuth.AuthStateListener {
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
     private FirebaseRemoteConfig mRemoteConfig;
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(this);
 
         mRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings remoteConfigSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -89,16 +90,8 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         // NOOP for now.
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                updateUI(firebaseAuth.getCurrentUser());
-            }
-        });
+    public void onAuthStateChanged(@NonNull FirebaseAuth auth) {
+        updateUI(auth.getCurrentUser());
     }
 
     @Override
