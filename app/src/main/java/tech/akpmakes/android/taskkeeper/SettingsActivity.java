@@ -20,6 +20,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ResultCodes;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -34,6 +38,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.Arrays;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -57,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Create the adapter that will return a fragment for each of the three
@@ -65,10 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         setupActionBar();
@@ -179,30 +185,15 @@ public class SettingsActivity extends AppCompatActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragmentCompat implements GoogleApiClient.OnConnectionFailedListener {
-        private static final int RC_SIGN_IN_GOOGLE = 0;
+        private static final int RC_SIGN_IN = 42;
         private static final String TAG = "login";
 
-        private GoogleApiClient mGoogleApiClient;
         private FirebaseAuth mAuth;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setHasOptionsMenu(true);
-
-            // Configure sign-in to request the user's ID, email address, and basic
-            // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                    .build();
-
-            // Build a GoogleApiClient with access to the Google Sign-In API and the
-            // options specified by gso.
-            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity().getApplicationContext())
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                    .build();
-
             mAuth = FirebaseAuth.getInstance();
 
             if (mAuth.getCurrentUser() == null || mAuth.getCurrentUser().isAnonymous()) {
@@ -211,7 +202,7 @@ public class SettingsActivity extends AppCompatActivity {
                 sign_in.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        signInGoogle();
+                        signIn();
                         return true;
                     }
                 });
@@ -221,7 +212,7 @@ public class SettingsActivity extends AppCompatActivity {
                 sign_out.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        signOutGoogle();
+                        signOut();
                         return true;
                     }
                 });
@@ -250,18 +241,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onStart() {
-            super.onStart();
-            mGoogleApiClient.connect();
-        }
-
-        @Override
-        public void onStop() {
-            super.onStop();
-            mGoogleApiClient.disconnect();
-        }
-
-        @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
@@ -275,64 +254,63 @@ public class SettingsActivity extends AppCompatActivity {
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
 
-            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-            if (requestCode == RC_SIGN_IN_GOOGLE) {
-                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-                handleGoogleSignInResult(result);
+            if (requestCode == RC_SIGN_IN) {
+                IdpResponse response = IdpResponse.fromResultIntent(data);
+
+                // Successfully signed in
+                if (resultCode == ResultCodes.OK) {
+                    getActivity().finish();
+                    return;
+                } else {
+                    // Sign in failed
+                    if (response == null) {
+                        // User pressed back button
+                        showSnackbar(R.string.sign_in_cancelled);
+                        return;
+                    }
+
+                    if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                        showSnackbar(R.string.no_internet_connection);
+                        return;
+                    }
+
+                    if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                        showSnackbar(R.string.unknown_error);
+                        return;
+                    }
+                }
+
+                showSnackbar(R.string.unknown_sign_in_response);
             }
         }
 
-        private void handleGoogleSignInResult(GoogleSignInResult result) {
-            Log.d(TAG, "handleGoogleSignInResult:" + result.isSuccess());
-            if (result.isSuccess()) {
-                // Signed in successfully, show authenticated UI.
-                GoogleSignInAccount acct = result.getSignInAccount();
-                firebaseAuthWithGoogle(acct);
-            }
-            updateUI();
+        private void signIn() {
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(
+                                    Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
+                            .setTosUrl(getString(R.string.privacy_policy_uri))
+                            .setPrivacyPolicyUrl(getString(R.string.privacy_policy_uri))
+                            .build(),
+                    RC_SIGN_IN);
         }
 
-        private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-            Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-            Log.d(TAG, "firebaseAuthWithGoogle:currentUid:" + mAuth.getCurrentUser().getUid());
-
-            final AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-            mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(getActivity().findViewById(android.R.id.content), "Authentication failed.",
-                                    Snackbar.LENGTH_LONG).show();
-                        }
-                        updateUI();
+        private void signOut() {
+            AuthUI.getInstance()
+                .signOut(this.getActivity())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // user is now signed out
+                        getActivity().finish();
                     }
                 });
         }
 
-        private void signInGoogle() {
-            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-            startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
-        }
-
-        private void signOutGoogle() {
-            FirebaseAuth.getInstance().signOut();
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                    new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(@NonNull Status status) {
-                            updateUI();
-                        }
-                    });
-        }
-
-        private void updateUI() {
-            getActivity().finish();
+        private void showSnackbar(int msg) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content), msg,
+                    Snackbar.LENGTH_LONG).show();
         }
 
         @Override

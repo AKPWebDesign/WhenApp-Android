@@ -15,8 +15,8 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
     private long when;
     public WhenEventViewHolder(View v) {
         super(v);
-        name = v.findViewById(R.id.event_name);
-        whenText = v.findViewById(R.id.event_time);
+        name = (TextView) v.findViewById(R.id.event_name);
+        whenText = (TextView) v.findViewById(R.id.event_time);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

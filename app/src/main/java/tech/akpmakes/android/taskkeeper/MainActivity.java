@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
             });
 
         setContentView(R.layout.activity_main);
-        mRecyclerView = findViewById(R.id.events_list);
+        mRecyclerView = (RecyclerView) findViewById(R.id.events_list);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setHapticFeedbackEnabled(true);

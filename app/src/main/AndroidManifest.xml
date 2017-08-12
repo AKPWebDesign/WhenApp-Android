@@ -18,9 +18,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="d70cc0c0eef2fdf1a924fd75b1e4114aa5747d69" />
+        <!--<meta-data-->
+            <!--android:name="io.fabric.ApiKey"-->
+            <!--android:value="d70cc0c0eef2fdf1a924fd75b1e4114aa5747d69" />-->
 
         <activity android:name=".MainActivity"></activity>
         <activity

@@ -5,5 +5,5 @@
         android:key="sign_in_preference"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="@string/common_signin_button_text_long" />
+        android:title="@string/sign_in" />
 </PreferenceScreen>

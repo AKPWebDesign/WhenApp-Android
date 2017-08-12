@@ -71,4 +71,13 @@
     <string name="rate_title">Rate When</string>
     <string name="rate_summary"></string>
     <string name="sign_in_failure">Sign in failed. You may experience problems saving data if this issue persists.</string>
+    <string name="sign_in_cancelled">Sign in cancelled.</string>
+    <string name="no_internet_connection">No internet connection detected! Please try again later.</string>
+    <string name="unknown_error">An error occurred.</string>
+    <string name="unknown_sign_in_response">An unknown response was received.</string>
+    <string name="sign_in">Sign in to When</string>
+
+    <!-- Twitter login -->
+    <string name="twitter_consumer_key" translatable="false">cYXbXylaEVcuJWwvL3eBsxEWf</string>
+    <string name="twitter_consumer_secret" translatable="false">2lqMXY6MvAiZ45zXT7q9inaLupaBsw3YUaujzeE1xsjhh7zFuk</string>
 </resources>
