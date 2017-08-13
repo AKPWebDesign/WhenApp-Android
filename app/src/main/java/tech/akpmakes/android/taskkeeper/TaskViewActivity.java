@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -23,6 +26,7 @@ import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
 public class TaskViewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     Calendar whenTime;
+    EditText taskName;
     TextView taskDate;
     TextView taskTime;
     CheckBox useCurrentTime;
@@ -32,11 +36,10 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_view);
-        final EditText taskName = findViewById(R.id.task_name_content);
+        taskName = findViewById(R.id.task_name_content);
         taskDate = findViewById(R.id.task_when_date);
         taskTime = findViewById(R.id.task_when_time);
         useCurrentTime = findViewById(R.id.useCurrentTime);
-        Button taskSave = findViewById(R.id.btn_save_task);
 
         whenTime = Calendar.getInstance();
 
@@ -101,42 +104,46 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
                 timePicker.show(getFragmentManager(), "TimePickerDialog");
             }
         });
-
-        taskSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(useCurrentTime.isChecked()) {
-                    updateTime();
-                }
-                String name = taskName.getText().toString();
-                Long when = whenTime.getTimeInMillis();
-                if (name.length() == 0) {
-                    taskName.setError("Task name is required!");
-                    return;
-                }
-                WhenEvent evt = new WhenEvent(name, when);
-                Intent i = new Intent();
-                i.putExtra("whenName", evt.getName());
-                i.putExtra("whenTime", evt.getWhen());
-                if(whenKey != null) {
-                    i.putExtra("whenKey", whenKey);
-                }
-                setResult(Activity.RESULT_OK, i);
-                finish();
-            }
-        });
-
-        useCurrentTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-
-                } else {
-
-                }
-            }
-        });
     }
+
+    private void saveTask() {
+        if(useCurrentTime.isChecked()) {
+            updateTime();
+        }
+        String name = taskName.getText().toString();
+        Long when = whenTime.getTimeInMillis();
+        if (name.length() == 0) {
+            taskName.setError("Task name is required!");
+            return;
+        }
+        WhenEvent evt = new WhenEvent(name, when);
+        Intent i = new Intent();
+        i.putExtra("whenName", evt.getName());
+        i.putExtra("whenTime", evt.getWhen());
+        if(whenKey != null) {
+            i.putExtra("whenKey", whenKey);
+        }
+        setResult(Activity.RESULT_OK, i);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add_task_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.save_task:
+                saveTask();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
@@ -161,8 +168,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void updateTime() {
-        Calendar now = Calendar.getInstance();
-        whenTime = now;
+        whenTime = Calendar.getInstance();
         updateDateTimeUI();
     }
 
