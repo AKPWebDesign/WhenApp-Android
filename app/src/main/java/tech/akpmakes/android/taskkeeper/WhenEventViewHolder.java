@@ -1,6 +1,7 @@
 package tech.akpmakes.android.taskkeeper;
 
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -22,9 +23,9 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void run() {
                 draw();
-                handler.postDelayed( this, 1000 );
+                handler.postDelayed( this, delay() );
             }
-        }, 1000);
+        }, delay());
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -38,6 +39,10 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
                 return false;
             }
         });
+    }
+
+    private long delay() {
+        return 1000 - (SystemClock.uptimeMillis() % 1000);
     }
 
     private void draw() {

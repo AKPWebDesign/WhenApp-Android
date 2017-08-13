@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,9 +52,9 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
                 if(useCurrentTime.isChecked()) {
                     updateTime();
                 }
-                handler.postDelayed( this, 250 );
+                handler.postDelayed( this, delay() );
             }
-        }, 0);
+        }, delay());
 
         Intent i = getIntent();
         if (i.hasExtra("whenName")) {
@@ -107,6 +108,10 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
         });
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    private long delay() {
+        return 1000 - (SystemClock.uptimeMillis() % 1000);
     }
 
     private void saveTask() {
