@@ -25,6 +25,19 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
                 handler.postDelayed( this, 1000 );
             }
         }, 1000);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickListener.onItemClick(view, getAdapterPosition());
+            }
+        });
+        v.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mClickListener.onItemLongClick(view, getAdapterPosition());
+                return false;
+            }
+        });
     }
 
     private void draw() {
@@ -71,5 +84,14 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
             res = String.format(Locale.ENGLISH, "%d days \r\n%02d:%02d:%02d", days, hours, minutes, seconds);
         }
         return extra + res;
+    }
+
+    private WhenEventViewHolder.ClickListener mClickListener;
+    public interface ClickListener{
+        void onItemClick(View view, int position);
+        void onItemLongClick(View view, int position);
+    }
+    public void setOnClickListener(WhenEventViewHolder.ClickListener clickListener){
+        mClickListener = clickListener;
     }
 }

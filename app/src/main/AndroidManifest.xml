@@ -22,7 +22,9 @@
             android:name="io.fabric.ApiKey"
             android:value="d70cc0c0eef2fdf1a924fd75b1e4114aa5747d69" />
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".TaskViewActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">

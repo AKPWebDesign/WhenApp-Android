@@ -1,10 +1,10 @@
 package tech.akpmakes.android.taskkeeper;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -27,13 +29,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
-import java.util.Date;
-
 import io.fabric.sdk.android.Fabric;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
-public class MainActivity extends AppCompatActivity implements AddItemDialog.AddItemDialogListener, FirebaseAuth.AuthStateListener {
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "MainActivity";
+    private static final int WHEN_EVENT_REQUEST = 6900;
     private FirebaseAuth mAuth;
     private FirebaseRemoteConfig mRemoteConfig;
     private Query mDBQuery;
@@ -140,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
             return; // TODO: display an error
         }
 
+        final Activity activity = this;
         mDBQuery = FirebaseDatabase.getInstance().getReference("events/" + user.getUid()).orderByChild("when");
         mAdapter = new FirebaseRecyclerAdapter<WhenEvent, WhenEventViewHolder>(
                 WhenEvent.class,
@@ -150,6 +152,25 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
             public void populateViewHolder(WhenEventViewHolder holder, WhenEvent evt, int position) {
                 holder.setName(evt.getName());
                 holder.setWhen(evt.getWhen());
+            }
+            @Override
+            public WhenEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                WhenEventViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+                viewHolder.setOnClickListener(new WhenEventViewHolder.ClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {}
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        Intent i = new Intent(activity, TaskViewActivity.class);
+                        WhenEvent evt = (WhenEvent) mAdapter.getItem(position);
+                        i.putExtra("whenName", evt.getName());
+                        i.putExtra("whenTime", evt.getWhen());
+                        i.putExtra("whenKey", mAdapter.getRef(position).getKey());
+                        startActivityForResult(i, WHEN_EVENT_REQUEST);
+                    }
+                });
+                return viewHolder;
             }
         };
         mRecyclerView.setAdapter(mAdapter);
@@ -167,28 +188,38 @@ public class MainActivity extends AppCompatActivity implements AddItemDialog.Add
         switch (item.getItemId()) {
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
-                return true;
+                return super.onOptionsItemSelected(item);
             case R.id.add_item:
-                addItem();
+                startActivityForResult(new Intent(this, TaskViewActivity.class), WHEN_EVENT_REQUEST);
+                return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void addItem() {
-        DialogFragment addItemFragment = new AddItemDialog();
-        addItemFragment.show(getSupportFragmentManager(), "addItem");
-    }
-
     @Override
-    public void onValue(String name) {
-        if(mDBQuery != null) {
-            mDBQuery.getRef().push().setValue(new WhenEvent(name, new Date().getTime()));
-            Snackbar.make(findViewById(android.R.id.content), "Event saved successfully!",
-                    Snackbar.LENGTH_LONG).show();
-        } else {
-            Snackbar.make(findViewById(android.R.id.content), "Your event could not be saved. Please try again.",
-                    Snackbar.LENGTH_LONG).show();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == WHEN_EVENT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                WhenEvent evt = new WhenEvent(
+                        data.getStringExtra("whenName"),
+                        data.getLongExtra("whenTime", 0)
+                );
+
+                if (mDBQuery != null) {
+                    if(data.hasExtra("whenKey")) {
+                        mDBQuery.getRef().child(data.getStringExtra("whenKey")).setValue(evt);
+                    } else {
+                        mDBQuery.getRef().push().setValue(evt);
+                    }
+
+                    Snackbar.make(findViewById(android.R.id.content), "Event saved successfully!",
+                            Snackbar.LENGTH_LONG).show();
+                } else {
+                    Snackbar.make(findViewById(android.R.id.content), "Your event could not be saved. Please try again.",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            }
         }
     }
 

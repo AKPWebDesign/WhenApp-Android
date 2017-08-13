@@ -71,4 +71,7 @@
     <string name="rate_title">Rate When</string>
     <string name="rate_summary"></string>
     <string name="sign_in_failure">Sign in failed. You may experience problems saving data if this issue persists.</string>
+    <string name="task_name_label">Task Name</string>
+    <string name="task_time">Task Time</string>
+    <string name="save_task_label">Save Task</string>
 </resources>
