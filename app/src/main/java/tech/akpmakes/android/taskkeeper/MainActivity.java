@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         Fabric.with(this, new Crashlytics());
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(this);
+
+        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
 
         mRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings remoteConfigSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     @Override
     public void onResume() {
         super.onResume();
+        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
         updateAuth();
     }
 
