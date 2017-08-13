@@ -42,7 +42,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:gravity="start"
-            android:text="Task Date Placeholder"
+            android:text="@string/task_date_placeholder"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -53,24 +53,10 @@
             android:layout_weight="1"
             android:ems="10"
             android:gravity="start"
-            android:text="Task Time Placeholder"
+            android:text="@string/task_time_placeholder"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_save_task"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/save_task_label"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <CheckBox
         android:id="@+id/useCurrentTime"
@@ -79,8 +65,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:checked="true"
-        android:text="Use Current Time"
+        android:text="@string/use_current_time"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:layout_marginLeft="8dp" />
 
 </android.support.constraint.ConstraintLayout>

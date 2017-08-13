@@ -74,4 +74,7 @@
     <string name="task_name_label">Task Name</string>
     <string name="task_time">Task Time</string>
     <string name="save_task_label">Save Task</string>
+    <string name="task_date_placeholder">00/00/0000</string>
+    <string name="task_time_placeholder">00:00:00</string>
+    <string name="use_current_time">Use current time</string>
 </resources>
