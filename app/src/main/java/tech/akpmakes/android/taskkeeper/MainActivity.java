@@ -206,6 +206,12 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         data.getLongExtra("whenTime", 0)
                 );
 
+                if(evt.getName().length() == 0) {
+                    Snackbar.make(findViewById(android.R.id.content), "Your task could not be saved. Task name is required.",
+                            Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
                 if (mDBQuery != null) {
                     if(data.hasExtra("whenKey")) {
                         mDBQuery.getRef().child(data.getStringExtra("whenKey")).setValue(evt);
@@ -213,10 +219,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         mDBQuery.getRef().push().setValue(evt);
                     }
 
-                    Snackbar.make(findViewById(android.R.id.content), "Event saved successfully!",
+                    Snackbar.make(findViewById(android.R.id.content), "Task saved successfully!",
                             Snackbar.LENGTH_LONG).show();
                 } else {
-                    Snackbar.make(findViewById(android.R.id.content), "Your event could not be saved. Please try again.",
+                    Snackbar.make(findViewById(android.R.id.content), "Your task could not be saved. Please try again.",
                             Snackbar.LENGTH_LONG).show();
                 }
             }
