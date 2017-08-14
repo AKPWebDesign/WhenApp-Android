@@ -1,6 +1,5 @@
 package tech.akpmakes.android.taskkeeper;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +13,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -31,11 +28,12 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import io.fabric.sdk.android.Fabric;
+import tech.akpmakes.android.taskkeeper.firebase.WhenAdapter;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
 public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
+    public static final int WHEN_EVENT_REQUEST = 6900;
     private static final String TAG = "MainActivity";
-    private static final int WHEN_EVENT_REQUEST = 6900;
     private FirebaseAuth mAuth;
     private FirebaseRemoteConfig mRemoteConfig;
     private Query mDBQuery;
@@ -145,39 +143,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             return; // TODO: display an error
         }
 
-        final Activity activity = this;
         mDBQuery = FirebaseDatabase.getInstance().getReference("events/" + user.getUid()).orderByChild("when");
         mDBQuery.keepSynced(true);
-        mAdapter = new FirebaseRecyclerAdapter<WhenEvent, WhenEventViewHolder>(
-                WhenEvent.class,
-                R.layout.item_whenevent,
-                WhenEventViewHolder.class,
-                mDBQuery) {
-            @Override
-            public void populateViewHolder(WhenEventViewHolder holder, WhenEvent evt, int position) {
-                holder.setName(evt.getName());
-                holder.setWhen(evt.getWhen());
-            }
-            @Override
-            public WhenEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                WhenEventViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
-                viewHolder.setOnClickListener(new WhenEventViewHolder.ClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {}
-
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-                        Intent i = new Intent(activity, TaskViewActivity.class);
-                        WhenEvent evt = (WhenEvent) mAdapter.getItem(position);
-                        i.putExtra("whenName", evt.getName());
-                        i.putExtra("whenTime", evt.getWhen());
-                        i.putExtra("whenKey", mAdapter.getRef(position).getKey());
-                        startActivityForResult(i, WHEN_EVENT_REQUEST);
-                    }
-                });
-                return viewHolder;
-            }
-        };
+        mAdapter = new WhenAdapter(this, mDBQuery);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -206,10 +174,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == WHEN_EVENT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                WhenEvent evt = new WhenEvent(
-                        data.getStringExtra("whenName"),
-                        data.getLongExtra("whenTime", 0)
-                );
+                WhenEvent evt = new WhenEvent(data);
 
                 if(evt.getName().length() == 0) {
                     Snackbar.make(findViewById(android.R.id.content), "Your task could not be saved. Task name is required.",

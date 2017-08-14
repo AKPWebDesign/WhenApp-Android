@@ -1,4 +1,4 @@
-package tech.akpmakes.android.taskkeeper;
+package tech.akpmakes.android.taskkeeper.firebase;
 
 import android.os.Handler;
 import android.os.SystemClock;
@@ -9,6 +9,8 @@ import android.widget.TextView;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import tech.akpmakes.android.taskkeeper.R;
 
 public class WhenEventViewHolder extends RecyclerView.ViewHolder {
     private TextView name;

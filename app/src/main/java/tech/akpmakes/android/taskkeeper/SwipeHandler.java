@@ -1,7 +1,6 @@
 package tech.akpmakes.android.taskkeeper;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -15,6 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.Date;
 
+import tech.akpmakes.android.taskkeeper.firebase.WhenEventViewHolder;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
 class SwipeHandler extends ItemTouchHelper.SimpleCallback {
