@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         final Activity activity = this;
         mDBQuery = FirebaseDatabase.getInstance().getReference("events/" + user.getUid()).orderByChild("when");
+        mDBQuery.keepSynced(true);
         mAdapter = new FirebaseRecyclerAdapter<WhenEvent, WhenEventViewHolder>(
                 WhenEvent.class,
                 R.layout.item_whenevent,
