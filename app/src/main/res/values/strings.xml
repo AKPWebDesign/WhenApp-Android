@@ -40,8 +40,7 @@
 
 
     <string name="title_activity_profile">Profile</string>
-    <string name="item_name_hint">Event Name</string>
-    <string name="add_item">Add Event</string>
+    <string name="add_item">Add Task</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_settings">Settings</string>
 
