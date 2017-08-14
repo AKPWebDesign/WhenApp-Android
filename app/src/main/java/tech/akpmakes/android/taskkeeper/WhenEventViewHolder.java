@@ -59,12 +59,16 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
     }
 
     public CharSequence getName() {
-        return name.getText();
+        return this.name.getText();
     }
 
     public void setWhen(long when) {
         this.when = when;
         draw();
+    }
+
+    public long getWhen() {
+        return this.when;
     }
 
     private static String millisToShortDHMS(long duration, String extra) {

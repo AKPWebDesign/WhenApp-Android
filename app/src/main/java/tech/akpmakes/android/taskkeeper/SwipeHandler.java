@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -16,6 +18,8 @@ import java.util.Date;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
 class SwipeHandler extends ItemTouchHelper.SimpleCallback {
+    private static final int REMOVE_ACTION = R.string.snackbar_task_deleted;
+    private static final int RESET_ACTION = R.string.snackbar_task_reset;
     private final MainActivity mainActivity;
 
     private ColorDrawable bgDelete;
@@ -49,14 +53,34 @@ class SwipeHandler extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         WhenEventViewHolder vh = (WhenEventViewHolder) viewHolder;
         DatabaseReference item =  mainActivity.getAdapter().getRef(vh.getAdapterPosition());
+        String name = vh.getName().toString();
+        long when = vh.getWhen();
+
         if(direction == ItemTouchHelper.LEFT) {
             item.removeValue();
+            createSnackbar(REMOVE_ACTION, new WhenEvent(name, when), item);
         } else {
             WhenEvent evt = new WhenEvent();
             evt.setName(vh.getName().toString());
             evt.setWhen(new Date().getTime());
             item.setValue(evt);
+            createSnackbar(RESET_ACTION, new WhenEvent(name, when), item);
         }
+    }
+
+    private void createSnackbar(int action, WhenEvent evt, DatabaseReference item) {
+        final Snackbar sb = Snackbar.make(mainActivity.findViewById(android.R.id.content),
+                mainActivity.getString(action), Snackbar.LENGTH_INDEFINITE);
+        sb.setAction(R.string.snackbar_undo_action, new UndoListener(evt, item, sb));
+        sb.show();
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sb.dismiss();
+            }
+        }, 5000);
     }
 
     @Override
@@ -104,5 +128,23 @@ class SwipeHandler extends ItemTouchHelper.SimpleCallback {
         icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
 
         icon.draw(c);
+    }
+
+    private class UndoListener implements View.OnClickListener {
+        WhenEvent event;
+        DatabaseReference dbRef;
+        Snackbar snackbar;
+
+        UndoListener(WhenEvent evt, DatabaseReference dbRef, Snackbar snackbar) {
+            this.event = evt;
+            this.dbRef = dbRef;
+            this.snackbar = snackbar;
+        }
+
+        @Override
+        public void onClick(View view) {
+            this.dbRef.setValue(this.event);
+            this.snackbar.dismiss();
+        }
     }
 }

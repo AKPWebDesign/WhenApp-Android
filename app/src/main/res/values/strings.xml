@@ -13,7 +13,7 @@
         enabled for your project, you have a properly configured google-services.json file
         and that your device has an internet connection.
     </string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="auth_code_fmt">Auth Code: %s</string>
     <string name="id_token_fmt">ID Token: %s</string>
 
@@ -77,4 +77,8 @@
     <string name="task_date_placeholder">00/00/0000</string>
     <string name="task_time_placeholder">00:00:00</string>
     <string name="use_current_time">Use current time</string>
+
+    <string name="snackbar_task_reset">Task reset successfully!</string>
+    <string name="snackbar_task_deleted">Task deleted successfully!</string>
+    <string name="snackbar_undo_action">UNDO</string>
 </resources>
