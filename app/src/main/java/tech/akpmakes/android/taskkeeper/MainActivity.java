@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 WhenEvent evt = new WhenEvent(data);
 
                 if(evt.getName().length() == 0) {
-                    Snackbar.make(findViewById(android.R.id.content), "Your task could not be saved. Task name is required.",
+                    Snackbar.make(findViewById(android.R.id.content), R.string.snackbar_save_error_name,
                             Snackbar.LENGTH_LONG).show();
                     return;
                 }
@@ -189,10 +189,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         mDBQuery.getRef().push().setValue(evt);
                     }
 
-                    Snackbar.make(findViewById(android.R.id.content), "Task saved successfully!",
+                    Snackbar.make(findViewById(android.R.id.content), R.string.snackbar_save_success,
                             Snackbar.LENGTH_LONG).show();
                 } else {
-                    Snackbar.make(findViewById(android.R.id.content), "Your task could not be saved. Please try again.",
+                    Snackbar.make(findViewById(android.R.id.content), R.string.snackbar_save_error,
                             Snackbar.LENGTH_LONG).show();
                 }
             }

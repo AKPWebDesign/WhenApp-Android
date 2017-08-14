@@ -80,4 +80,7 @@
     <string name="snackbar_task_reset">Task reset successfully!</string>
     <string name="snackbar_task_deleted">Task deleted successfully!</string>
     <string name="snackbar_undo_action">UNDO</string>
+    <string name="snackbar_save_success">Task saved successfully!</string>
+    <string name="snackbar_save_error">Your task could not be saved. Please try again.</string>
+    <string name="snackbar_save_error_name">Your task could not be saved. Task name is required.</string>
 </resources>
