@@ -48,7 +48,9 @@ android {
         }
         debug {
             applicationIdSuffix ".debug"
-            signingConfig signingConfigs.debugApp
+            if(project.hasProperty('ANDROID_SIGNING_KEY')) {
+                signingConfig signingConfigs.debugApp
+            }
         }
     }
     productFlavors {
