@@ -79,6 +79,7 @@ dependencies {
     compile 'com.android.support:support-v4:26.0.1'
     compile 'com.android.support:support-vector-drawable:26.0.1'
     compile 'com.android.support:preference-v7:26.0.1'
+    compile 'com.android.support:preference-v14:26.0.1'
     compile 'com.wdullaer:materialdatetimepicker:3.2.2'
     testCompile 'junit:junit:4.12'
 }
