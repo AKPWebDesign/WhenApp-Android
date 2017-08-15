@@ -32,10 +32,15 @@ public final class WhenAdapter extends FirebaseRecyclerAdapter<WhenEvent, WhenEv
         WhenEventViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
         viewHolder.setOnClickListener(new WhenEventViewHolder.ClickListener() {
             @Override
-            public void onItemClick(View view, int position) {}
+            public void onItemClick(View view, int position) {
+                editTask(position);
+            }
 
             @Override
             public void onItemLongClick(View view, int position) {
+            }
+
+            private void editTask(int position) {
                 Intent i = new Intent(activity, TaskViewActivity.class);
                 WhenEvent evt = WhenAdapter.this.getItem(position);
                 i.putExtra("whenName", evt.getName());
