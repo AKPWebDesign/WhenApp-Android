@@ -98,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference("app_version").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), R.string.smiley,
+                    Snackbar.make(getActivity().findViewById(R.id.container), R.string.smiley,
                             Snackbar.LENGTH_LONG).show();
                     return true;
                 }
@@ -307,7 +307,7 @@ public class SettingsActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(getActivity().findViewById(android.R.id.content), "Authentication failed.",
+                            Snackbar.make(getActivity().findViewById(R.id.container), "Authentication failed.",
                                     Snackbar.LENGTH_LONG).show();
                         }
                         updateUI();

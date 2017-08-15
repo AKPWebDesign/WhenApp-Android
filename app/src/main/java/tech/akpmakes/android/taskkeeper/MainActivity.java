@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInAnonymously:failure", task.getException());
-                                Snackbar.make(findViewById(android.R.id.content), R.string.sign_in_failure,
+                                Snackbar.make(findViewById(R.id.events_list), R.string.sign_in_failure,
                                         Snackbar.LENGTH_LONG).show();
                                 updateUI(null);
                             }
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 WhenEvent evt = new WhenEvent(data);
 
                 if(evt.getName().length() == 0) {
-                    Snackbar.make(findViewById(android.R.id.content), R.string.snackbar_save_error_name,
+                    Snackbar.make(findViewById(R.id.events_list), R.string.snackbar_save_error_name,
                             Snackbar.LENGTH_LONG).show();
                     return;
                 }
@@ -189,10 +189,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         mDBQuery.getRef().push().setValue(evt);
                     }
 
-                    Snackbar.make(findViewById(android.R.id.content), R.string.snackbar_save_success,
+                    Snackbar.make(findViewById(R.id.events_list), R.string.snackbar_save_success,
                             Snackbar.LENGTH_LONG).show();
                 } else {
-                    Snackbar.make(findViewById(android.R.id.content), R.string.snackbar_save_error,
+                    Snackbar.make(findViewById(R.id.events_list), R.string.snackbar_save_error,
                             Snackbar.LENGTH_LONG).show();
                 }
             }

@@ -69,7 +69,7 @@ class SwipeHandler extends ItemTouchHelper.SimpleCallback {
     }
 
     private void createSnackbar(int action, WhenEvent evt, DatabaseReference item) {
-        final Snackbar sb = Snackbar.make(mainActivity.findViewById(android.R.id.content),
+        final Snackbar sb = Snackbar.make(mainActivity.findViewById(R.id.events_list),
                 mainActivity.getString(action), Snackbar.LENGTH_INDEFINITE);
         sb.setAction(R.string.snackbar_undo_action, new UndoListener(evt, item, sb));
         sb.show();
