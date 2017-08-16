@@ -27,7 +27,7 @@ import java.util.Calendar;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
 public class TaskViewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-    Calendar whenTime;
+    final Calendar whenTime = Calendar.getInstance();
     EditText taskName;
     TextView taskDate;
     TextView taskTime;
@@ -42,8 +42,6 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
         taskDate = findViewById(R.id.task_when_date);
         taskTime = findViewById(R.id.task_when_time);
         useCurrentTime = findViewById(R.id.useCurrentTime);
-
-        whenTime = Calendar.getInstance();
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -75,10 +73,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
         taskDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-                if(whenTime != null) {
-                    now = whenTime;
-                }
+                Calendar now = whenTime;
                 DatePickerDialog datePicker = DatePickerDialog.newInstance(
                         TaskViewActivity.this,
                         now.get(Calendar.YEAR),
@@ -91,10 +86,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
         taskTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-                if(whenTime != null) {
-                    now = whenTime;
-                }
+                Calendar now = whenTime;
                 TimePickerDialog timePicker = TimePickerDialog.newInstance(
                         TaskViewActivity.this,
                         now.get(Calendar.HOUR_OF_DAY),
@@ -119,7 +111,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
             updateTime();
         }
         String name = taskName.getText().toString();
-        Long when = whenTime.getTimeInMillis();
+        long when = whenTime.getTimeInMillis();
         if (name.length() == 0) {
             taskName.setError("Task name is required!");
             return;
@@ -176,7 +168,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void updateTime() {
-        whenTime = Calendar.getInstance();
+        whenTime.setTimeInMillis(System.currentTimeMillis());
         updateDateTimeUI();
     }
 
