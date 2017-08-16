@@ -83,4 +83,18 @@
     <string name="snackbar_save_success">Task saved successfully!</string>
     <string name="snackbar_save_error">Your task could not be saved. Please try again.</string>
     <string name="snackbar_save_error_name">Your task could not be saved. Task name is required.</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="notification_label_notify_after">Notify after:</string>
+    <string name="default_value_notify_after">10</string>
+    <string name="notification_label_remind_every">Remind every:</string>
+
+
+    <string-array name="notify_units">
+        <item>Minutes</item>
+        <item>Hours</item>
+        <item>Days</item>
+        <item>Weeks</item>
+        <item>Months</item>
+        <item>Years</item>
+    </string-array>
 </resources>
