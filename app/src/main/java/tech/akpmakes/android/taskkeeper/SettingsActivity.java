@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,6 +20,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Switch;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -52,6 +54,8 @@ public class SettingsActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private PreferenceManager prefManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +74,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        prefManager = new PreferenceManager(this);
 
         setupActionBar();
     }
@@ -227,7 +233,18 @@ public class SettingsActivity extends AppCompatActivity {
                 });
             }
 
+            final PreferenceManager pManager = ((SettingsActivity) this.getActivity()).prefManager;
             addPreferencesFromResource(R.xml.pref_general_notifications);
+            final SwitchPreference notifications = (SwitchPreference) findPreference("notify_preference");
+            notifications.setChecked(pManager.allowNotifications());
+            notifications.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean enabled = (boolean) newValue;
+                    pManager.setAllowNotifications(enabled);
+                    return true;
+                }
+            });
 
             String package_name =  this.getActivity().getApplicationContext().getPackageName();
             final Uri uri = Uri.parse("market://details?id=" + (!package_name.endsWith(".debug") ? package_name : package_name.substring(0, package_name.length() - 6)));

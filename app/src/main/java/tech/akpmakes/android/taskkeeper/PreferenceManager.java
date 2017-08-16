@@ -13,6 +13,7 @@ public class PreferenceManager {
 
     private static final String PREF_NAME = "when";
     private static final String FIRST_LAUNCH = "firstLaunch";
+    private static final String ALLOW_NOTIFICATIONS = "allowNotices";
 
     public PreferenceManager(Context context) {
         this._context = context;
@@ -27,5 +28,16 @@ public class PreferenceManager {
     public boolean isFirstLaunch() {
         Log.d(TAG, "getting first launch: " + this.pref.getBoolean(FIRST_LAUNCH, true));
         return this.pref.getBoolean(FIRST_LAUNCH, true);
+    }
+
+    public void setAllowNotifications(boolean allow) {
+        Log.d(TAG, "set allow notifications: " + allow);
+        this.pref.edit().putBoolean(ALLOW_NOTIFICATIONS, allow).apply();
+    }
+
+    public boolean allowNotifications() {
+        boolean ret = this.pref.getBoolean(ALLOW_NOTIFICATIONS, true);
+        Log.d(TAG, "Allow notifications: " + ret);
+        return ret;
     }
 }
