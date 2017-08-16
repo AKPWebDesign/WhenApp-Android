@@ -227,6 +227,8 @@ public class SettingsActivity extends AppCompatActivity {
                 });
             }
 
+            addPreferencesFromResource(R.xml.pref_general_notifications);
+
             String package_name =  this.getActivity().getApplicationContext().getPackageName();
             final Uri uri = Uri.parse("market://details?id=" + (!package_name.endsWith(".debug") ? package_name : package_name.substring(0, package_name.length() - 6)));
 

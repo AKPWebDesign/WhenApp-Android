@@ -12,11 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -34,6 +35,8 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
     TextView taskDate;
     TextView taskTime;
     CheckBox useCurrentTime;
+    LinearLayout notifyHeader;
+    LinearLayout notifyContainer;
     String whenKey;
 
     @Override
@@ -109,6 +112,17 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
             }
         });
 
+        notifyHeader = findViewById(R.id.notification_switch_container);
+        notifyContainer = findViewById(R.id.notify_container);
+        Switch notifyButton = findViewById(R.id.notify_button);
+        updateNotificationDisplay(notifyButton.isChecked());
+        notifyButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                updateNotificationDisplay(b);
+            }
+        });
+
         Spinner notify_after = findViewById(R.id.notify_after_units_spinner);
         Spinner remind_every = findViewById(R.id.remind_every_units_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -125,6 +139,11 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
 
     private long delay() {
         return 1000 - (SystemClock.uptimeMillis() % 1000);
+    }
+
+    private void updateNotificationDisplay(boolean b) {
+        notifyHeader.setShowDividers(b ? LinearLayout.SHOW_DIVIDER_NONE : LinearLayout.SHOW_DIVIDER_END);
+        notifyContainer.setVisibility(b ? View.VISIBLE : View.GONE);
     }
 
     private void saveTask() {

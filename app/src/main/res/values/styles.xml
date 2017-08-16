@@ -24,4 +24,8 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="LinearDivider">
+        <item name="android:divider">@drawable/line_divider</item>
+        <item name="android:showDividers">end</item>
+    </style>
 </resources>

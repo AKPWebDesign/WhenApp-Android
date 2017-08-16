@@ -1,0 +1,10 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:id="@+id/notify"
+        android:key="notify_preference"
+        android:title="Enable Notifications"
+        android:summaryOn="Notifications enabled for this device"
+        android:summaryOff="Notifications disabled for this device"
+        android:defaultValue="false"
+        />
+</PreferenceScreen>
