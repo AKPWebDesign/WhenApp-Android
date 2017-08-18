@@ -107,9 +107,8 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference("social_discord").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(getString(R.string.social_discord_uri)));
-                    startActivity(i);
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.social_discord_uri)));
+                    startActivity(Intent.createChooser(i, null));
                     return true;
                 }
             });
@@ -117,9 +116,9 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference("social_github").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(getString(R.string.social_github_uri)));
-                    startActivity(i);
+                    Intent i = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.social_github_uri, getString(R.string.versionName))));
+                    startActivity(Intent.createChooser(i, null));
                     return true;
                 }
             });
@@ -127,9 +126,8 @@ public class SettingsActivity extends AppCompatActivity {
 			findPreference("privacy_policy").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(getString(R.string.privacy_policy_uri)));
-                    startActivity(i);
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy_uri)));
+                    startActivity(Intent.createChooser(i, null));
                     return true;
                 }
             });
@@ -137,9 +135,8 @@ public class SettingsActivity extends AppCompatActivity {
             findPreference("more_info").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(getString(R.string.more_information_uri)));
-                    startActivity(i);
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.more_information_uri)));
+                    startActivity(Intent.createChooser(i, null));
                     return true;
                 }
             });
