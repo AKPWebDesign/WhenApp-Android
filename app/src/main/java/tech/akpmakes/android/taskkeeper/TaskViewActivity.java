@@ -1,6 +1,8 @@
 package tech.akpmakes.android.taskkeeper;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,14 +16,13 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+import android.widget.TimePicker;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,7 +31,7 @@ import java.util.Calendar;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 
 public class TaskViewActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-    Calendar whenTime;
+    final Calendar whenTime = Calendar.getInstance();
     EditText taskName;
     TextView taskDate;
     TextView taskTime;
@@ -47,8 +48,6 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
         taskDate = findViewById(R.id.task_when_date);
         taskTime = findViewById(R.id.task_when_time);
         useCurrentTime = findViewById(R.id.useCurrentTime);
-
-        whenTime = Calendar.getInstance();
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -80,35 +79,30 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
         taskDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-                if(whenTime != null) {
-                    now = whenTime;
-                }
-                DatePickerDialog datePicker = DatePickerDialog.newInstance(
+                Calendar now = whenTime;
+                DatePickerDialog datePicker = new DatePickerDialog(
+                        TaskViewActivity.this,
                         TaskViewActivity.this,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH));
-                datePicker.show(getFragmentManager(), "DatePickerDialog");
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                datePicker.show();
             }
         });
 
         taskTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-                if(whenTime != null) {
-                    now = whenTime;
-                }
-                TimePickerDialog timePicker = TimePickerDialog.newInstance(
+                Calendar now = whenTime;
+                TimePickerDialog timePicker = new TimePickerDialog(
+                        TaskViewActivity.this,
                         TaskViewActivity.this,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
-                        now.get(Calendar.SECOND),
-                        false
+                        android.text.format.DateFormat.is24HourFormat(TaskViewActivity.this)
                 );
-                timePicker.enableSeconds(true);
-                timePicker.show(getFragmentManager(), "TimePickerDialog");
+                timePicker.show();
             }
         });
 
@@ -151,7 +145,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
             updateTime();
         }
         String name = taskName.getText().toString();
-        Long when = whenTime.getTimeInMillis();
+        long when = whenTime.getTimeInMillis();
         if (name.length() == 0) {
             taskName.setError("Task name is required!");
             return;
@@ -186,7 +180,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
 
 
     @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         whenTime.set(Calendar.YEAR, year);
         whenTime.set(Calendar.MONTH, monthOfYear);
         whenTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -197,10 +191,10 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
     }
 
     @Override
-    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
         whenTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         whenTime.set(Calendar.MINUTE, minute);
-        whenTime.set(Calendar.SECOND, second);
+        whenTime.set(Calendar.SECOND, 0);
 
         useCurrentTime.setChecked(false);
 
@@ -208,7 +202,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void updateTime() {
-        whenTime = Calendar.getInstance();
+        whenTime.setTimeInMillis(System.currentTimeMillis());
         updateDateTimeUI();
     }
 

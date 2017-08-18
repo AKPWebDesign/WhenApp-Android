@@ -48,11 +48,12 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void draw() {
+        final long now = System.currentTimeMillis();
         String extra = "";
-        if(this.when > new Date().getTime()) {
+        if(this.when > now) {
             extra = "+";
         }
-        this.whenText.setText(millisToShortDHMS(new Date().getTime() - this.when, extra));
+        this.whenText.setText(millisToShortDHMS(now - this.when, extra));
     }
 
     public void setName(String name) {
