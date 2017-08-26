@@ -22,10 +22,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
+import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 import tech.akpmakes.android.taskkeeper.firebase.WhenAdapter;
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private RecyclerView mRecyclerView;
     private FirebaseRecyclerAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
+    private Map<String, WhenEvent> localCopyOfItems;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +101,14 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     public void onAuthStateChanged(@NonNull FirebaseAuth auth) {
         updateUI(auth.getCurrentUser());
+
+        boolean isSignedIn = (auth.getCurrentUser() != null && !auth.getCurrentUser().isAnonymous());
+
+        if(mDBQuery != null && localCopyOfItems != null && isSignedIn) {
+            for(Map.Entry<String, WhenEvent> entry : localCopyOfItems.entrySet()) {
+                mDBQuery.getRef().child(entry.getKey()).setValue(entry.getValue());
+            }
+        }
     }
 
     @Override
@@ -147,6 +162,17 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mDBQuery.keepSynced(true);
         mAdapter = new WhenAdapter(this, mDBQuery);
         mRecyclerView.setAdapter(mAdapter);
+
+        mDBQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                GenericTypeIndicator<Map<String, WhenEvent>> t = new GenericTypeIndicator<Map<String, WhenEvent>>(){};
+                localCopyOfItems = dataSnapshot.getValue(t);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
     @Override
