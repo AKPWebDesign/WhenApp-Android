@@ -90,10 +90,10 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
             res = String.format(Locale.ENGLISH, "%02d:%02d:%02d", hours, minutes, seconds);
         }
         else if (days == 1) {
-            res = String.format(Locale.ENGLISH, "%d day \r\n%02d:%02d:%02d", days, hours, minutes, seconds);
+            res = String.format(Locale.ENGLISH, "%d day\n%02d:%02d:%02d", days, hours, minutes, seconds);
         }
         else {
-            res = String.format(Locale.ENGLISH, "%d days \r\n%02d:%02d:%02d", days, hours, minutes, seconds);
+            res = String.format(Locale.ENGLISH, "%d days\n%02d:%02d:%02d", days, hours, minutes, seconds);
         }
         return extra + res;
     }
