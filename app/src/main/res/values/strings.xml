@@ -83,4 +83,12 @@
     <string name="snackbar_save_success">Task saved successfully!</string>
     <string name="snackbar_save_error">Your task could not be saved. Please try again.</string>
     <string name="snackbar_save_error_name">Your task could not be saved. Task name is required.</string>
+
+    <!-- Crashlytics strings -->
+    <string name="com.crashlytics.CrashSubmissionPromptTitle">Houston, we have a problem</string>
+    <string name="com.crashlytics.CrashSubmissionPromptMessage">This is embarrassing! Please help us fix the problem by sending a crash report.</string>
+    <string name="com.crashlytics.CrashSubmissionSendTitle">Send</string>
+    <string name="com.crashlytics.CrashSubmissionAlwaysSendTitle">Always Send</string>
+    <string name="com.crashlytics.CrashSubmissionCancelTitle">Don\'t Send</string>
+    <!-- END Crashlytics strings -->
 </resources>
