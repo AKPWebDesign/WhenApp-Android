@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -33,6 +34,8 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
     CheckBox useCurrentTime;
     String whenKey;
 
+    PreferenceManager pref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +44,7 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
         taskDate = findViewById(R.id.task_when_date);
         taskTime = findViewById(R.id.task_when_time);
         useCurrentTime = findViewById(R.id.useCurrentTime);
+        pref = new PreferenceManager(this);
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -80,6 +84,9 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
                 );
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && pref.getFirstDayOfWeek() > 0) {
+                    datePicker.getDatePicker().setFirstDayOfWeek(pref.getFirstDayOfWeek());
+                }
                 datePicker.show();
             }
         });

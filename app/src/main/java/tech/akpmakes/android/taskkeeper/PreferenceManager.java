@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.Calendar;
+
 public class PreferenceManager {
     private static final String TAG = "PreferenceManager";
     private SharedPreferences pref;
@@ -13,6 +15,7 @@ public class PreferenceManager {
 
     private static final String PREF_NAME = "when";
     private static final String FIRST_LAUNCH = "firstLaunch";
+    private static final String FIRST_DAY = "firstDayOfWeek";
 
     public PreferenceManager(Context context) {
         this._context = context;
@@ -25,7 +28,21 @@ public class PreferenceManager {
     }
 
     public boolean isFirstLaunch() {
-        Log.d(TAG, "getting first launch: " + this.pref.getBoolean(FIRST_LAUNCH, true));
-        return this.pref.getBoolean(FIRST_LAUNCH, true);
+        final boolean ret = this.pref.getBoolean(FIRST_LAUNCH, true);
+        Log.d(TAG, "getting first launch: " + ret);
+        return ret;
+    }
+
+    public void setFirstDayOfWeek(int day) {
+        boolean invalid = 0 > day || day > Calendar.SATURDAY;
+        Log.d(TAG, (invalid ? "invalid" : "setting") + " first day of week: " + day);
+        if (invalid) return;
+        this.pref.edit().putInt(FIRST_DAY, day);
+    }
+
+    public int getFirstDayOfWeek() {
+        final int day = this.pref.getInt(FIRST_DAY, 0);
+        Log.d(TAG, "setting first day of week: " + day);
+        return day;
     }
 }

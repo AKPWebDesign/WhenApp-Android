@@ -75,7 +75,6 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
     }
 
     private static String millisToShortDHMS(long duration, String extra) {
-        String res;
         long days  = TimeUnit.MILLISECONDS.toDays(duration);
         long hours = TimeUnit.MILLISECONDS.toHours(duration) - TimeUnit.DAYS.toHours(days);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(duration)
@@ -86,16 +85,13 @@ public class WhenEventViewHolder extends RecyclerView.ViewHolder {
         hours = Math.abs(hours);
         minutes = Math.abs(minutes);
         seconds = Math.abs(seconds);
-        if (days == 0) {
-            res = String.format(Locale.ENGLISH, "%02d:%02d:%02d", hours, minutes, seconds);
+
+        String res = "";
+        if (days > 0) {
+            res = "%1$d day" + (days > 1 ? "s" : "") + "\n";
         }
-        else if (days == 1) {
-            res = String.format(Locale.ENGLISH, "%d day\n%02d:%02d:%02d", days, hours, minutes, seconds);
-        }
-        else {
-            res = String.format(Locale.ENGLISH, "%d days\n%02d:%02d:%02d", days, hours, minutes, seconds);
-        }
-        return extra + res;
+        res += "%2$02d:%3$02d:%4$02d";
+        return extra + String.format(Locale.ENGLISH, res, days, hours, minutes, seconds);
     }
 
     private WhenEventViewHolder.ClickListener mClickListener;

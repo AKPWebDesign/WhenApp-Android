@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -34,6 +36,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.Calendar;
+
+import tech.akpmakes.android.taskkeeper.util.DaysOfWeek;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -176,6 +182,7 @@ public class SettingsActivity extends AppCompatActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragmentCompat implements GoogleApiClient.OnConnectionFailedListener {
+        private PreferenceManager pref;
         private static final int RC_SIGN_IN_GOOGLE = 0;
         private static final String TAG = "login";
 
@@ -185,6 +192,8 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            pref = new PreferenceManager(this.getContext());
+
             setHasOptionsMenu(true);
 
             // Configure sign-in to request the user's ID, email address, and basic
@@ -219,6 +228,22 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
                         signOutGoogle();
+                        return true;
+                    }
+                });
+            }
+
+            // We only want this setting if we can support using it
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                addPreferencesFromResource(R.xml.pref_day_of_week);
+                final Preference dayOfWeek = findPreference("dayOfWeek_preference");
+                updateDayOfWeek(dayOfWeek);
+                dayOfWeek.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        new AlertDialog.Builder(GeneralPreferenceFragment.this.getContext())
+                                .setTitle("Test")
+                                .show();
                         return true;
                     }
                 });
@@ -277,6 +302,19 @@ public class SettingsActivity extends AppCompatActivity {
                 GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
                 handleGoogleSignInResult(result);
             }
+        }
+
+        private void updateDayOfWeek(Preference pref) {
+            int dayValue = this.pref.getFirstDayOfWeek();
+            boolean useDefault = dayValue == 0;
+            if (useDefault) {
+                dayValue = Calendar.getInstance().getFirstDayOfWeek();
+            }
+            pref.setSummary(getDayName(dayValue) + (useDefault ? " ("+getDayName(0)+")" : ""));
+        }
+
+        private String getDayName(int day) {
+            return DaysOfWeek.get(day).getName(this.getContext());
         }
 
         private void handleGoogleSignInResult(GoogleSignInResult result) {

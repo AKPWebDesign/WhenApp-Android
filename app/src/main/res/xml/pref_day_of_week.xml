@@ -1,0 +1,6 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference android:key="dayOfWeek_preference"
+        android:enabled="true"
+        android:title="@string/day_title"
+        android:summary="Value generated in code"/>
+</PreferenceScreen>

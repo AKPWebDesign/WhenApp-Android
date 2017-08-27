@@ -84,6 +84,26 @@
     <string name="snackbar_save_error">Your task could not be saved. Please try again.</string>
     <string name="snackbar_save_error_name">Your task could not be saved. Task name is required.</string>
 
+    <string name="day_title">Start of the week</string>
+    <string-array name="day_units">
+        <item>default</item>
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+    <string name="_default">default</string>
+    <string name="day_1">Sunday</string>
+    <string name="day_2">Monday</string>
+    <string name="day_3">Tuesday</string>
+    <string name="day_4">Wednesday</string>
+    <string name="day_5">Thursday</string>
+    <string name="day_6">Friday</string>
+    <string name="day_7">Saturday</string>
+
     <!-- Crashlytics strings -->
     <string name="com.crashlytics.CrashSubmissionPromptTitle">Houston, we have a problem</string>
     <string name="com.crashlytics.CrashSubmissionPromptMessage">This is embarrassing! Please help us fix the problem by sending a crash report.</string>
