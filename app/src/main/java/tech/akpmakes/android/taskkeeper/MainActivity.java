@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
+        Fabric.with(this, new Crashlytics.Builder().core(core).build());
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(this);
 

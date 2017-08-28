@@ -14,6 +14,12 @@ androidGitVersion {
     format = "%tag%%-count%%-commit%%-dirty%"
 }
 
+int VERSION_CODE = androidGitVersion.code()
+String VERSION_NAME = androidGitVersion.name()
+
+println 'VersionName: ' + VERSION_NAME
+println 'VersionCode: ' + VERSION_CODE
+
 repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url 'https://maven.google.com' }
@@ -36,8 +42,8 @@ android {
         applicationId "tech.akpmakes.android.taskkeeper"
         minSdkVersion 15
         targetSdkVersion 26
-        versionName androidGitVersion.name()
-        versionCode androidGitVersion.code()
+        versionName "Debug"
+        versionCode 1
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -50,21 +56,28 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            applicationIdSuffix ".debug"
             if(project.hasProperty('ANDROID_SIGNING_KEY')) {
                 signingConfig signingConfigs.debugApp
             }
+            // Disable crashlytics
+            ext.enableCrashlytics = false
         }
     }
     productFlavors {
+        dev {
+            minSdkVersion 21
+            applicationIdSuffix ".debug"
+            resConfigs "en", "xxhdpi"
+        }
+        prod {
+            versionName VERSION_NAME
+            versionCode VERSION_CODE
+        }
     }
 
     lintOptions {
       abortOnError false
     }
-
-    println 'VersionName: ' + androidGitVersion.name()
-    println 'VersionCode: ' + androidGitVersion.code()
 }
 
 dependencies {
