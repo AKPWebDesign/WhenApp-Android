@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -143,12 +143,10 @@ public class TaskViewActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.save_task:
-                saveTask();
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.save_task) {
+            saveTask();
         }
+        return super.onOptionsItemSelected(item);
     }
 
 

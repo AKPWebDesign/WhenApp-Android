@@ -2,7 +2,7 @@ package tech.akpmakes.android.taskkeeper;
 
 import android.app.Application;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.firebase.database.FirebaseDatabase;
 

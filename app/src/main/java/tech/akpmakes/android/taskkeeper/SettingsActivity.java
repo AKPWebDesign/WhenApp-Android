@@ -5,20 +5,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.DialogPreference;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -44,12 +46,12 @@ import tech.akpmakes.android.taskkeeper.util.DaysOfWeek;
 public class SettingsActivity extends AppCompatActivity {
 
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which will keep every
      * loaded fragment in memory. If this becomes too memory intensive, it
      * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     * {@link FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -234,20 +236,20 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             // We only want this setting if we can support using it
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                addPreferencesFromResource(R.xml.pref_day_of_week);
-                final Preference dayOfWeek = findPreference("dayOfWeek_preference");
-                updateDayOfWeek(dayOfWeek);
-                dayOfWeek.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        new AlertDialog.Builder(GeneralPreferenceFragment.this.getContext())
-                                .setTitle("Test")
-                                .show();
-                        return true;
-                    }
-                });
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                addPreferencesFromResource(R.xml.pref_day_of_week);
+//                final Preference dayOfWeek = findPreference("dayOfWeek_preference");
+//                updateDayOfWeek(dayOfWeek);
+//                dayOfWeek.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//                    @Override
+//                    public boolean onPreferenceClick(Preference preference) {
+//                        new AlertDialog.Builder(GeneralPreferenceFragment.this.getContext())
+//                                .setTitle("Test")
+//                                .show();
+//                        return true;
+//                    }
+//                });
+//            }
 
             String package_name =  this.getActivity().getApplicationContext().getPackageName();
             final Uri uri = Uri.parse("market://details?id=" + (!package_name.endsWith(".debug") ? package_name : package_name.substring(0, package_name.length() - 6)));
