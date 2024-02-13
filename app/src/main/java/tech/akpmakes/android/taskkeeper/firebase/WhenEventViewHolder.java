@@ -2,11 +2,10 @@ package tech.akpmakes.android.taskkeeper.firebase;
 
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 

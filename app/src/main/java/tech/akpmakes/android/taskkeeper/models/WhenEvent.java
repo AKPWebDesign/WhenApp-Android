@@ -1,7 +1,7 @@
 package tech.akpmakes.android.taskkeeper.models;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class WhenEvent implements Comparable<WhenEvent> {
     public String name;
