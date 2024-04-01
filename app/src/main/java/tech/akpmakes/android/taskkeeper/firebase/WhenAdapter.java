@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.Query;
 
 import tech.akpmakes.android.taskkeeper.MainActivity;
 import tech.akpmakes.android.taskkeeper.R;
@@ -56,7 +55,7 @@ public final class WhenAdapter extends FirebaseRecyclerAdapter<WhenEvent, WhenEv
 
     @Override
     protected void onBindViewHolder(@NonNull WhenEventViewHolder holder, int i, @NonNull WhenEvent evt) {
-        holder.setName(evt.getName());
-        holder.setWhen(evt.getWhen());
+        holder.setName(evt.name);
+        holder.setWhen(evt.when);
     }
 }
