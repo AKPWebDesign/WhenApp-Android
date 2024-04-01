@@ -3,6 +3,8 @@ package tech.akpmakes.android.taskkeeper;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -31,8 +33,10 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.util.Map;
+import java.util.Objects;
 
 import tech.akpmakes.android.taskkeeper.firebase.WhenAdapter;
+import tech.akpmakes.android.taskkeeper.firebase.WhenEventViewHolder;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
 import tech.akpmakes.android.taskkeeper.BuildConfig;
 
@@ -43,8 +47,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private FirebaseRemoteConfig mRemoteConfig;
     private Query mDBQuery;
     private RecyclerView mRecyclerView;
-    private FirebaseRecyclerAdapter mAdapter;
-    private LinearLayoutManager mLayoutManager;
+    private FirebaseRecyclerAdapter<WhenEvent, WhenEventViewHolder> mAdapter;
     private Map<String, WhenEvent> localCopyOfItems;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,21 +59,19 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         mRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings remoteConfigSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                // 12 hours if not debug mode, else 0.
+                .setMinimumFetchIntervalInSeconds(BuildConfig.DEBUG ? 0 : 43200)
                 .build();
-        mRemoteConfig.setConfigSettings(remoteConfigSettings);
-        mRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+        mRemoteConfig.setConfigSettingsAsync(remoteConfigSettings);
+        mRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
-        long cacheExpiration = 43200; // 12 hours, to match Firebase best practices.
-        if(mRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
-            cacheExpiration = 0;
-        }
-        mRemoteConfig.fetch(cacheExpiration)
+
+        mRemoteConfig.fetch(remoteConfigSettings.getMinimumFetchIntervalInSeconds())
             .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        mRemoteConfig.activateFetched();
+                        mRemoteConfig.activate();
                     }
                     applyRemoteConfig();
                 }
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setHapticFeedbackEnabled(true);
 
-        mLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
@@ -114,14 +115,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         super.onResume();
         GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
         updateAuth();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(mAdapter != null) {
-            mAdapter.cleanup();
-        }
     }
 
     private void updateAuth() {
@@ -158,18 +151,22 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         mDBQuery = FirebaseDatabase.getInstance().getReference("events/" + user.getUid()).orderByChild("when");
         mDBQuery.keepSynced(true);
-        mAdapter = new WhenAdapter(this, mDBQuery);
+        FirebaseRecyclerOptions<WhenEvent> options = new FirebaseRecyclerOptions.Builder<WhenEvent>()
+                .setQuery(mDBQuery, WhenEvent.class)
+                .setLifecycleOwner(this)
+                .build();
+        mAdapter = new WhenAdapter(this, options);
         mRecyclerView.setAdapter(mAdapter);
 
         mDBQuery.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 GenericTypeIndicator<Map<String, WhenEvent>> t = new GenericTypeIndicator<Map<String, WhenEvent>>(){};
                 localCopyOfItems = dataSnapshot.getValue(t);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
 
@@ -195,19 +192,21 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == WHEN_EVENT_REQUEST) {
             if (resultCode == RESULT_OK) {
                 WhenEvent evt = new WhenEvent(data);
 
-                if(evt.getName().length() == 0) {
+                if (evt.getName().isEmpty()) {
                     Snackbar.make(findViewById(R.id.events_list), R.string.snackbar_save_error_name,
                             Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
                 if (mDBQuery != null) {
-                    if(data.hasExtra("whenKey")) {
-                        mDBQuery.getRef().child(data.getStringExtra("whenKey")).setValue(evt);
+                    if (data.hasExtra("whenKey")) {
+                        mDBQuery.getRef().child(Objects.requireNonNull(data.getStringExtra("whenKey"))).setValue(evt);
                     } else {
                         mDBQuery.getRef().push().setValue(evt);
                     }
@@ -222,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         }
     }
 
-    FirebaseRecyclerAdapter getAdapter() {
+    FirebaseRecyclerAdapter<WhenEvent, WhenEventViewHolder> getAdapter() {
         return mAdapter;
     }
 }
