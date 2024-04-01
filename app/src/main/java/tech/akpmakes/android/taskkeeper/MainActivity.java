@@ -28,19 +28,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import tech.akpmakes.android.taskkeeper.firebase.WhenAdapter;
 import tech.akpmakes.android.taskkeeper.firebase.WhenEventViewHolder;
 import tech.akpmakes.android.taskkeeper.models.WhenEvent;
-import tech.akpmakes.android.taskkeeper.BuildConfig;
 
 public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
     public static final int WHEN_EVENT_REQUEST = 6900;
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private Query mDBQuery;
     private RecyclerView mRecyclerView;
     private FirebaseRecyclerAdapter<WhenEvent, WhenEventViewHolder> mAdapter;
-    private Map<String, WhenEvent> localCopyOfItems;
+    private final Map<String, WhenEvent> localCopyOfItems = new HashMap<>();
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -75,14 +74,11 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
 
         mRemoteConfig.fetch(remoteConfigSettings.getMinimumFetchIntervalInSeconds())
-            .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        mRemoteConfig.activate();
-                    }
-                    applyRemoteConfig();
+            .addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    mRemoteConfig.activate();
                 }
+                applyRemoteConfig();
             });
 
         setContentView(R.layout.activity_main);
@@ -130,21 +126,18 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser == null) {
             mAuth.signInAnonymously()
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d(TAG, "signInAnonymously:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                updateUI(user);
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w(TAG, "signInAnonymously:failure", task.getException());
-                                Snackbar.make(findViewById(R.id.events_list), R.string.sign_in_failure,
-                                        Snackbar.LENGTH_LONG).show();
-                                updateUI(null);
-                            }
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInAnonymously:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInAnonymously:failure", task.getException());
+                            Snackbar.make(findViewById(R.id.events_list), R.string.sign_in_failure,
+                                    Snackbar.LENGTH_LONG).show();
+                            updateUI(null);
                         }
                     });
         } else {
@@ -169,8 +162,14 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mDBQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<Map<String, WhenEvent>> t = new GenericTypeIndicator<Map<String, WhenEvent>>(){};
-                localCopyOfItems = dataSnapshot.getValue(t);
+                localCopyOfItems.clear();
+
+                for (DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
+                    String key = dataSnapshot.getKey();
+                    WhenEvent event = dataSnapshot.getValue(WhenEvent.class);
+
+                    localCopyOfItems.put(key, event);
+                }
             }
 
             @Override
