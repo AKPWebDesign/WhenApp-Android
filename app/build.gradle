@@ -94,6 +94,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
+    // multidex support is needed until we're minSdk >= 21
+    implementation 'androidx.multidex:multidex:2.0.1'
+
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.firebaseui:firebase-ui-database:8.0.2'
