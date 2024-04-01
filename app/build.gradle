@@ -41,6 +41,7 @@ android {
         applicationId "tech.akpmakes.android.taskkeeper"
         minSdkVersion 19
         targetSdkVersion 34
+        multiDexEnabled true
         versionName "Debug"
         versionCode 1
         vectorDrawables.useSupportLibrary = true
