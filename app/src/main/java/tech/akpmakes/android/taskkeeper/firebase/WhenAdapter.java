@@ -55,7 +55,7 @@ public final class WhenAdapter extends FirebaseRecyclerAdapter<WhenEvent, WhenEv
 
     @Override
     protected void onBindViewHolder(@NonNull WhenEventViewHolder holder, int i, @NonNull WhenEvent evt) {
-        holder.setName(evt.name);
-        holder.setWhen(evt.when);
+        holder.setName(evt.getName());
+        holder.setWhen(evt.getWhen());
     }
 }
